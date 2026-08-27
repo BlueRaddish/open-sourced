@@ -10,6 +10,7 @@ describe('per-user free OpenRouter connection', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals()
+    sessionStorage.clear()
     history.replaceState(null, '', '/open-source-ed/')
   })
 

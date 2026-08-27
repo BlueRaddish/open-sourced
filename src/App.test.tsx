@@ -4,7 +4,11 @@ import App from './App'
 import { STORAGE_KEY } from './lib/storage'
 
 describe('Open SourceED app', () => {
-  beforeEach(() => localStorage.removeItem(STORAGE_KEY))
+  beforeEach(() => {
+    localStorage.removeItem(STORAGE_KEY)
+    sessionStorage.clear()
+    history.replaceState(null, '', '/open-source-ed/')
+  })
 
   it('opens the starter set from the dashboard', () => {
     render(<App />)
