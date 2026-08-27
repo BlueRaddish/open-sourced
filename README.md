@@ -11,6 +11,8 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Multiple study sets for any topic
 - Manual card editor with notes and CSV/TSV bulk import
 - AI drafts grounded in pasted text, Markdown, CSV, JSON, or PDF resources
+- Five editable generation presets plus custom author instructions
+- Free generation by default, with opt-in GPT, Claude, and Gemini model choices
 - Review-before-save workflow for generated material
 - Flip-style flashcards, adaptive learning, and 4-choice mock tests
 - Per-card scheduling, accuracy, mastery, streaks, and test history
@@ -23,7 +25,7 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Built-in California driver knowledge test set with 64 attributed handbook questions and a 36-question mock exam
 - Five beginner Japanese sample sets for testing a realistic multi-set library
 
-The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth and uses their own free quota. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
+The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth. Free generation is the default; visitors may explicitly choose a current GPT, Claude, or Gemini model that uses only their connected OpenRouter balance or provider keys. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
 
 AI generation is available both from the main navigation and inside **Create**. It produces a pre-filled, editable draft in the standard set editor; it never saves directly to the library. The user can revise or remove any generated card before choosing **Save set**.
 
@@ -46,15 +48,21 @@ npm run check
 
 This runs lint, tests, browser TypeScript/build validation, and a separate server type-check.
 
-## Free-only AI setup
+## AI providers and cost safety
 
-Generation uses OpenRouter’s Chat Completions API with strict structured output. The browser and optional server both use `openrouter/free`, which automatically selects a compatible free model.
+Generation uses OpenRouter’s Chat Completions API with strict structured output. The model catalog is loaded from OpenRouter at runtime so the interface does not promise stale GPT, Claude, or Gemini versions. Only text models that advertise structured-output support appear.
 
-The browser flow uses OpenRouter OAuth with PKCE. The resulting user-controlled key is kept in `sessionStorage`, disappears when that tab session ends, and is never added to backups. Every browser request hardcodes `openrouter/free`. The optional server rejects every identifier except `openrouter/free` or one ending in `:free`. Neither path contains an OpenAI client or falls back to a paid model. When OpenRouter returns a free-tier limit or capacity error, generation stops with a clear message.
+The browser flow uses OpenRouter OAuth with PKCE. The resulting user-controlled key is kept in `sessionStorage`, disappears when that tab session ends, and is never added to backups. Open SourceED never asks for a raw OpenAI, Anthropic, or Google API key. Visitors who have provider API access can add those keys in [OpenRouter BYOK settings](https://openrouter.ai/workspaces/default/byok), where OpenRouter encrypts and routes them. This does not connect consumer ChatGPT, Claude, or Gemini subscriptions.
+
+Free mode always requests `openrouter/free`. If free capacity or quota is exhausted, it stops without selecting a paid model. Paid/BYOK choices require a visitor-owned OpenRouter connection and an unchecked-by-default confirmation for each generation; the confirmation clears after the request. Published input and output rates are shown beside the selected model. If a BYOK user never wants OpenRouter credit fallback, they should enable **Never use shared capacity** in OpenRouter’s BYOK settings.
+
+All browser AI requests require structured output and set OpenRouter provider routing to deny data-collecting providers. Uploaded text and editable author directions are sent only after **Generate editable cards** is pressed. Directions are separated from source material in the prompt and cannot override source grounding, safety, exact card count, or the response schema.
+
+The optional managed endpoint remains deliberately free-only. It rejects every model identifier except `openrouter/free` or one ending in `:free`, and also stops on free-tier limits rather than using paid credits.
 
 Two supported modes:
 
-1. **Static and zero-cost:** deploy to GitHub Pages. Each visitor chooses **Connect OpenRouter** and consumes only their own free quota.
+1. **Static and zero-cost to the maintainer:** deploy to GitHub Pages. Each visitor chooses **Connect OpenRouter** and uses only their own free, paid, or BYOK quota.
 2. **Optional managed endpoint:** deploy the repository on Vercel with `OPENROUTER_API_KEY`, or host `server/index.ts` and configure `VITE_AI_ENDPOINT`. Never put the key in a `VITE_` variable.
 
 The public GitHub Pages workflow has no API secret.
@@ -87,7 +95,7 @@ Comma-separated rows are also accepted. Individual sets can be exported as CSV f
 - `localStorage` persistence with versioned JSON backups
 - PDF.js for browser-side PDF text extraction
 - Express local API and Vercel serverless adapter
-- Per-user OpenRouter OAuth PKCE + free models via `fetch`
+- Per-user OpenRouter OAuth PKCE + live GPT, Claude, Gemini, and free model catalog via `fetch`
 - Optional Express/Vercel free-only generation endpoint
 - Vitest + Testing Library and Oxlint
 
