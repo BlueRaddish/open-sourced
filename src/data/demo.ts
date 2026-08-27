@@ -4,9 +4,9 @@ export const demoSet: StudySet = {
   id: 'demo-cell-biology',
   title: 'Cell Biology Essentials',
   subject: 'Biology',
-  description: 'A compact starter set that shows how StudyForge works.',
+  description: 'A compact starter set that shows how Open SourceED works.',
   color: '#f26b4e',
-  sources: ['StudyForge sample'],
+  sources: ['Open SourceED sample'],
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   cards: [

@@ -1,6 +1,6 @@
-# StudyForge interface brief
+# Open SourceED interface brief
 
-StudyForge keeps the warm, editorial card language of the original RoadReady project while broadening it into a reusable learning workspace.
+Open SourceED keeps the warm, editorial card language of the original RoadReady project while broadening it into a reusable learning workspace.
 
 ## Product principles
 

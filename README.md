@@ -1,10 +1,10 @@
-# StudyForge
+# Open SourceED
 
-StudyForge is an open-source, Quizlet-style learning workspace for any subject. Build a set by hand or generate an editable draft from source material, then study with flashcards, adaptive retrieval, and randomized mock tests.
+Open SourceED is an open-source, Quizlet-style learning workspace for any subject. Build a set by hand or generate an editable draft from source material, then study with flashcards, adaptive retrieval, and randomized mock tests.
 
-**Live static app:** https://blueraddish.github.io/studyforge/
+**Live static app:** https://blueraddish.github.io/open-source-ed/
 
-![StudyForge dashboard](docs/studyforge-desktop.png)
+![Open SourceED dashboard](docs/open-source-ed-desktop.png)
 
 ## Highlights
 
@@ -31,7 +31,7 @@ copy .env.example .env
 npm run dev
 ```
 
-The app runs through Vite and proxies `/api` requests to the local Express server on port 8787. If you do not configure a key, the rest of StudyForge still works normally.
+The app runs through Vite and proxies `/api` requests to the local Express server on port 8787. If you do not configure a key, the rest of Open SourceED still works normally.
 
 Quality gate:
 

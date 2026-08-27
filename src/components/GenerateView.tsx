@@ -27,7 +27,7 @@ export function GenerateView({ onDraft }: Props) {
     finally { setExtracting(false) }
   }
   const generate = async () => {
-    if (topic.trim().length < 2) return setError('Tell StudyForge what topic to focus on.')
+    if (topic.trim().length < 2) return setError('Tell Open SourceED what topic to focus on.')
     if (resource.trim().length < 100) return setError('Add at least a short paragraph of source material.')
     setLoading(true); setError('')
     try {
@@ -41,7 +41,7 @@ export function GenerateView({ onDraft }: Props) {
     finally { setLoading(false) }
   }
   return <section className="page-width page-section generate-page">
-    <div className="page-title"><div><span className="eyebrow"><Sparkles size={15} /> Source-grounded AI</span><h1>Turn resources into a first draft</h1><p>Add the material you trust. StudyForge extracts the text, drafts focused cards, and sends everything to the normal editor for your review.</p></div></div>
+    <div className="page-title"><div><span className="eyebrow"><Sparkles size={15} /> Source-grounded AI</span><h1>Turn resources into a first draft</h1><p>Add the material you trust. Open SourceED extracts the text, drafts focused cards, and sends everything to the normal editor for your review.</p></div></div>
     <div className="generate-layout"><div className="generator-panel">
       <label><span>What are you studying? *</span><input value={topic} onChange={(event) => setTopic(event.target.value)} placeholder="e.g. Photosynthesis for AP Biology" /></label>
       <div className="form-grid"><label><span>Number of cards</span><select value={count} onChange={(event) => setCount(Number(event.target.value))}><option value={8}>8 cards</option><option value={15}>15 cards</option><option value={25}>25 cards</option><option value={40}>40 cards</option></select></label><label><span>Difficulty</span><select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label></div>

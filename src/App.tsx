@@ -54,7 +54,7 @@ export default function App() {
     saveSet(copy)
   }
   const restore = async (file: File) => { try { const next = await readBackup(file); setState(next); setSelectedId(next.sets[0]?.id ?? ''); setView('library') } catch (error) { alert(error instanceof Error ? error.message : 'Could not restore backup.') } }
-  const reset = () => { if (confirm('Reset your entire StudyForge library and progress to the starter set?')) { const next = initialState(); setState(next); setSelectedId(next.sets[0].id); setView('home') } }
+  const reset = () => { if (confirm('Reset your entire Open SourceED library and progress to the starter set?')) { const next = initialState(); setState(next); setSelectedId(next.sets[0].id); setView('home') } }
   let content
   if (view === 'home') content = <Home sets={state.sets} progress={state.progress} activityDates={state.activityDates} openSet={openSet} navigate={navigate} />
   else if (view === 'library') content = <LibraryView sets={state.sets} progress={state.progress} openSet={openSet} create={() => navigate('create')} />

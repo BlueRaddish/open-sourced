@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 import { STORAGE_KEY } from './lib/storage'
 
-describe('StudyForge app', () => {
+describe('Open SourceED app', () => {
   beforeEach(() => localStorage.removeItem(STORAGE_KEY))
 
   it('opens the starter set from the dashboard', () => {
