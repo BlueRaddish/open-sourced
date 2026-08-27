@@ -13,6 +13,8 @@ export type StudyCard = {
   term: string
   definition: string
   note: string
+  choices?: string[]
+  category?: string
 }
 
 export type StudySet = {
@@ -22,6 +24,7 @@ export type StudySet = {
   description: string
   color: string
   cards: StudyCard[]
+  testSize?: number
   sources: string[]
   createdAt: string
   updatedAt: string
@@ -48,6 +51,7 @@ export type TestAttempt = {
 
 export type StudyState = {
   version: 1
+  seedVersion: number
   sets: StudySet[]
   progress: Record<string, Record<string, CardProgress>>
   attempts: TestAttempt[]

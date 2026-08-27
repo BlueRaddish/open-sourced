@@ -57,6 +57,7 @@ export function shuffle<T>(items: T[]) {
 }
 
 export function choicesFor(card: StudyCard, cards: StudyCard[]) {
+  if (card.choices?.length === 4 && card.choices.includes(card.definition)) return shuffle([...card.choices])
   const distractors = shuffle(cards.filter((candidate) => candidate.id !== card.id)).slice(0, 3).map((candidate) => candidate.definition)
   return shuffle([card.definition, ...distractors])
 }

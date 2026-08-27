@@ -1,12 +1,20 @@
 import { demoSet } from '../data/demo'
+import { caDmvSet } from '../data/caDmv'
 import type { Preferences, StudyState } from '../types'
 
 export const STORAGE_KEY = 'open-source-ed.library.v1'
 const LEGACY_STORAGE_KEY = 'studyforge.library.v1'
 
 export const defaultPreferences: Preferences = { theme: 'system', palette: 'poppy' }
+const CURRENT_SEED_VERSION = 1
 
-export const initialState = (): StudyState => ({ version: 1, sets: [demoSet], progress: {}, attempts: [], activityDates: [], preferences: defaultPreferences })
+export const initialState = (): StudyState => ({ version: 1, seedVersion: CURRENT_SEED_VERSION, sets: [demoSet, caDmvSet], progress: {}, attempts: [], activityDates: [], preferences: defaultPreferences })
+
+function normalizeState(parsed: StudyState): StudyState {
+  const seedVersion = parsed.seedVersion ?? 0
+  const sets = seedVersion < CURRENT_SEED_VERSION && !parsed.sets.some((set) => set.id === caDmvSet.id) ? [...parsed.sets, caDmvSet] : parsed.sets
+  return { ...parsed, sets, seedVersion: CURRENT_SEED_VERSION, preferences: parsed.preferences ?? defaultPreferences }
+}
 
 export function loadState(): StudyState {
   try {
@@ -14,7 +22,7 @@ export function loadState(): StudyState {
     if (!raw) return initialState()
     const parsed = JSON.parse(raw) as StudyState
     if (parsed.version !== 1 || !Array.isArray(parsed.sets)) return initialState()
-    return { ...parsed, preferences: parsed.preferences ?? defaultPreferences }
+    return normalizeState(parsed)
   } catch {
     return initialState()
   }
@@ -37,5 +45,5 @@ export function downloadBackup(state: StudyState) {
 export async function readBackup(file: File): Promise<StudyState> {
   const parsed = JSON.parse(await file.text()) as StudyState
   if (parsed.version !== 1 || !Array.isArray(parsed.sets) || typeof parsed.progress !== 'object') throw new Error('That is not a valid Open SourceED backup.')
-  return { ...parsed, preferences: parsed.preferences ?? defaultPreferences }
+  return normalizeState(parsed)
 }

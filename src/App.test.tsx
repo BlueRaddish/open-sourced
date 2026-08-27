@@ -17,6 +17,16 @@ describe('Open SourceED app', () => {
     expect(screen.getByRole('button', { name: /flashcards/i })).toBeInTheDocument()
   })
 
+  it('includes the complete California DMV study set', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /california driver knowledge test/i }))
+    expect(screen.getByRole('heading', { name: 'California Driver Knowledge Test' })).toBeInTheDocument()
+    expect(screen.getByText(/64 cards · Updated/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Proficiency by category' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /mock test/i }))
+    expect(screen.getByText('0 / 36 answered')).toBeInTheDocument()
+  })
+
   it('opens the manual set editor', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /create a set/i }))

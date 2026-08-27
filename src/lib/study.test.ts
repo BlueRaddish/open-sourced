@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { activityStreak, choicesFor, mastery, recordAnswer, setMastery } from './study'
 import { demoSet } from '../data/demo'
+import { caDmvSet } from '../data/caDmv'
 
 describe('study engine', () => {
   it('raises mastery with repeated correct retrieval', () => {
@@ -24,6 +25,12 @@ describe('study engine', () => {
     expect(options).toHaveLength(4)
     expect(new Set(options).size).toBe(4)
     expect(options).toContain(demoSet.cards[0].definition)
+  })
+
+  it('preserves curated choices for specialized sets', () => {
+    const card = caDmvSet.cards[0]
+    expect(choicesFor(card, caDmvSet.cards)).toEqual(expect.arrayContaining(card.choices!))
+    expect(choicesFor(card, caDmvSet.cards)).toHaveLength(4)
   })
 
   it('averages mastery across every card in a set', () => {

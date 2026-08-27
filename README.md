@@ -19,6 +19,7 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Responsive, accessible UI with a local-first data model
 - System, light, and dark appearance modes with four color palettes
 - Zero-server, unlisted share links with read-only preview and local import
+- Built-in California driver knowledge test set with 64 attributed handbook questions and a 36-question mock exam
 
 The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth and uses their own free quota. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
 
@@ -85,6 +86,12 @@ Comma-separated rows are also accepted. Individual sets can be exported as CSV f
 - Vitest + Testing Library and Oxlint
 
 See [DESIGN.md](DESIGN.md) for the product and interface rationale.
+
+## California DMV study content
+
+The built-in **California Driver Knowledge Test** set is adapted from the *California Driver's Handbook* (2025), California Department of Motor Vehicles. It is an independent study aid, not an official DMV practice test, and laws or procedures may change. Confirm current rules in the [official California Driver's Handbook](https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/).
+
+That handbook-derived set is distributed under CC BY-NC 4.0 rather than the application's MIT license. See [CONTENT_LICENSE.md](CONTENT_LICENSE.md) for attribution and terms.
 
 ## License
 
