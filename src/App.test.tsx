@@ -98,6 +98,10 @@ describe('Open SourcED app', () => {
   it('changes and persists appearance settings', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /settings/i }))
+    expect(screen.getByRole('heading', { name: 'Read-aloud check' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Test English voice' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Test Japanese voice' })).toBeInTheDocument()
+    expect(screen.getByText(/requests 100% speech volume/i)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /dark/i }))
     fireEvent.click(screen.getByRole('button', { name: /violet/i }))
     expect(document.documentElement).toHaveAttribute('data-theme', 'dark')

@@ -16,15 +16,6 @@ export function inferSpeechLanguage(text: string) {
   return document.documentElement.lang || navigator.language || 'en-US'
 }
 
-export function selectSpeechVoice(language: string, voices: SpeechSynthesisVoice[]) {
-  const exact = (voice: SpeechSynthesisVoice) => voice.lang.toLowerCase() === language.toLowerCase()
-  const family = (voice: SpeechSynthesisVoice) => voice.lang.toLowerCase().startsWith(language.slice(0, 2).toLowerCase())
-  return voices.find((voice) => exact(voice) && voice.localService)
-    || voices.find(exact)
-    || voices.find((voice) => family(voice) && voice.localService)
-    || voices.find(family)
-}
-
 function japaneseTermReadings(term: string) {
   return term.split(/\s*[/／]\s*/u).flatMap((part) => {
     const kanaReadings = [...part.matchAll(/（([^）]*[ぁ-ゖァ-ヺー][^）]*)）/gu)].map((match) => match[1].trim())

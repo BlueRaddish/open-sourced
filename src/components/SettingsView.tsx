@@ -1,5 +1,6 @@
-import { Check, CloudOff, Database, Download, Laptop, Moon, Palette, Sun } from 'lucide-react'
+import { Check, CloudOff, Database, Download, Laptop, Moon, Palette, Sun, Volume2 } from 'lucide-react'
 import type { ColorPalette, Preferences, ThemeMode } from '../types'
+import { ReadAloudButton } from './ReadAloudButton'
 
 type Props = { preferences: Preferences; update: (preferences: Preferences) => void; backup: () => void }
 
@@ -24,6 +25,7 @@ export function SettingsView({ preferences, update, backup }: Props) {
         <fieldset className="setting-field"><legend>Brightness</legend><div className="theme-options">{themes.map(({ id, label, detail, icon: Icon }) => <button key={id} className={preferences.theme === id ? 'selected' : ''} onClick={() => update({ ...preferences, theme: id })}><Icon /><span><b>{label}</b><small>{detail}</small></span>{preferences.theme === id && <Check className="option-check" />}</button>)}</div></fieldset>
         <fieldset className="setting-field"><legend>Color palette</legend><div className="palette-options">{palettes.map(({ id, label, colors }) => <button key={id} className={preferences.palette === id ? 'selected' : ''} onClick={() => update({ ...preferences, palette: id })}><span className="palette-swatches">{colors.map((color) => <i key={color} style={{ background: color }} />)}</span><b>{label}</b>{preferences.palette === id && <Check className="option-check" />}</button>)}</div></fieldset>
       </article>
+      <article className="settings-card audio-check"><div className="settings-title"><Volume2 /><div><h2>Read-aloud check</h2><p>Open SourcED explicitly requests 100% speech volume. Your browser tab, operating system, and output device control the final audible level.</p></div></div><div className="audio-test-row"><div><b>Test each voice separately</b><span>If English works but Japanese does not, this device likely needs a Japanese speech voice. If both are silent, check tab and device volume.</span></div><div><ReadAloudButton text="Open SourcED read aloud is working." label="Test English voice" /><ReadAloudButton text={[{ text: '日本語の音声テストです。', lang: 'ja-JP', rate: .8 }]} label="Test Japanese voice" /></div></div></article>
     </div><aside className="storage-card"><Database /><span className="kicker">Storage</span><h2>Local to this browser</h2><p>Your sets, answers, proficiency, test history, and appearance preferences are saved in this browser profile using local storage.</p><div className="storage-fact"><Laptop /><div><b>This device and browser</b><span>No automatic access from another device or browser profile.</span></div></div><div className="storage-fact"><CloudOff /><div><b>Not stored in GitHub</b><span>GitHub hosts the application code, not your personal study library.</span></div></div><button className="secondary" onClick={backup}><Download /> Export a portable backup</button><small>Restore that JSON file from Progress on another browser to move your library manually.</small></aside></div>
   </section>
 }

@@ -1,5 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import { cleanup } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cardSpeechSegments, inferSpeechLanguage } from '../lib/speech'
 import { ReadAloudButton } from './ReadAloudButton'
@@ -8,6 +7,7 @@ class MockUtterance {
   text: string
   lang = ''
   rate = 1
+  volume = 1
   voice: SpeechSynthesisVoice | null = null
   onend: (() => void) | null = null
   onerror: (() => void) | null = null
@@ -20,19 +20,21 @@ class MockUtterance {
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
 describe('read aloud', () => {
-  it('queues each card part with a language-appropriate browser voice', () => {
+  it('speaks language-aware parts sequentially at full volume', () => {
     const speak = vi.fn()
     const cancel = vi.fn()
-    const japaneseVoice = { default: false, lang: 'ja-JP', localService: true, name: 'Japanese', voiceURI: 'Japanese' } as SpeechSynthesisVoice
-    const englishVoice = { default: true, lang: 'en-US', localService: true, name: 'English', voiceURI: 'English' } as SpeechSynthesisVoice
-    vi.stubGlobal('speechSynthesis', { speak, cancel, getVoices: () => [englishVoice, japaneseVoice] })
+    const resume = vi.fn()
+    vi.stubGlobal('speechSynthesis', { speak, cancel, resume })
     vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance)
     render(<ReadAloudButton text={['こんにちは', 'Hello']} label="Read greeting aloud" />)
     fireEvent.click(screen.getByRole('button', { name: 'Read greeting aloud' }))
     expect(cancel).toHaveBeenCalledOnce()
+    expect(resume).toHaveBeenCalledOnce()
+    expect(speak).toHaveBeenCalledOnce()
+    expect(speak.mock.calls[0][0]).toMatchObject({ text: 'こんにちは', lang: 'ja-JP', rate: .95, volume: 1, voice: null })
+    act(() => speak.mock.calls[0][0].onend?.())
     expect(speak).toHaveBeenCalledTimes(2)
-    expect(speak.mock.calls[0][0]).toMatchObject({ text: 'こんにちは', lang: 'ja-JP', rate: .95, voice: japaneseVoice })
-    expect(speak.mock.calls[1][0]).toMatchObject({ text: 'Hello', lang: 'en-US', rate: .95, voice: englishVoice })
+    expect(speak.mock.calls[1][0]).toMatchObject({ text: 'Hello', lang: 'en-US', rate: .95, volume: 1, voice: null })
     fireEvent.click(screen.getByRole('button', { name: 'Stop reading' }))
     expect(cancel).toHaveBeenCalledTimes(2)
   })

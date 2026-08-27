@@ -50,6 +50,11 @@ select {
   align-items: start;
 }
 
+.settings-main {
+  display: grid;
+  gap: 20px;
+}
+
 .settings-card,
 .storage-card {
   border: 1px solid var(--line);
@@ -95,6 +100,31 @@ select {
 
 .setting-field legend {
   margin-bottom: 11px;
+}
+
+.audio-test-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding-top: 22px;
+}
+
+.audio-test-row b,
+.audio-test-row span {
+  display: block;
+}
+
+.audio-test-row span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.audio-test-row > div:last-child {
+  display: grid;
+  gap: 8px;
 }
 
 .theme-options,
@@ -671,6 +701,10 @@ select {
   .ai-connection {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .audio-test-row {
+    grid-template-columns: 1fr;
   }
 
   .model-family-options,
