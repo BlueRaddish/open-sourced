@@ -18,7 +18,7 @@ const palettes: { id: ColorPalette; label: string; colors: string[] }[] = [
 
 export function SettingsView({ preferences, update, backup }: Props) {
   return <section className="page-width page-section settings-page">
-    <div className="page-title"><div><span className="kicker">Make it yours</span><h1>Settings</h1><p>Choose how Open SourceED looks and see exactly where your learning data lives.</p></div></div>
+    <div className="page-title"><div><span className="kicker">Make it yours</span><h1>Settings</h1><p>Choose how Open SourcED looks and see exactly where your learning data lives.</p></div></div>
     <div className="settings-layout"><div className="settings-main">
       <article className="settings-card"><div className="settings-title"><Palette /><div><h2>Appearance</h2><p>Changes apply immediately and are included in your backup.</p></div></div>
         <fieldset className="setting-field"><legend>Brightness</legend><div className="theme-options">{themes.map(({ id, label, detail, icon: Icon }) => <button key={id} className={preferences.theme === id ? 'selected' : ''} onClick={() => update({ ...preferences, theme: id })}><Icon /><span><b>{label}</b><small>{detail}</small></span>{preferences.theme === id && <Check className="option-check" />}</button>)}</div></fieldset>

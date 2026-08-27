@@ -1,6 +1,6 @@
-# Open SourceED interface brief
+# Open SourcED interface brief
 
-Open SourceED keeps the warm, editorial card language of the original RoadReady project while broadening it into a reusable learning workspace.
+Open SourcED keeps the warm, editorial card language of the original RoadReady project while broadening it into a reusable learning workspace.
 
 ## Product principles
 

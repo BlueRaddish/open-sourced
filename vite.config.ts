@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/open-source-ed/',
+  base: '/open-sourced/',
   plugins: [react()],
   server: {
     proxy: {

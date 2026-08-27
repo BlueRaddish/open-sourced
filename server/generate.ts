@@ -55,8 +55,8 @@ export async function generateStudySet(input: unknown): Promise<GenerationResult
     headers: {
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': process.env.APP_URL || 'https://blueraddish.github.io/open-source-ed/',
-      'X-Title': 'Open SourceED',
+      'HTTP-Referer': process.env.APP_URL || 'https://blueraddish.github.io/open-sourced/',
+      'X-Title': 'Open SourcED',
     },
     body: JSON.stringify({
       model,

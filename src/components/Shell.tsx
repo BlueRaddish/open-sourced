@@ -18,9 +18,9 @@ export function Shell({ view, navigate, children }: Props) {
   const go = (next: View) => { navigate(next); setOpen(false) }
   return <div className="app-shell">
     <header className="topbar">
-      <button className="brand" onClick={() => go('home')} aria-label="Open SourceED home">
+      <button className="brand" onClick={() => go('home')} aria-label="Open SourcED home">
         <span className="brand-mark"><BookOpen size={21} /></span>
-        <span>Open Source<span>ED</span></span>
+        <span>Open Sourc<span>ED</span></span>
       </button>
       <nav className="desktop-nav" aria-label="Primary navigation">
         {nav.map(({ view: item, label, icon: Icon }) => <button key={item} className={view === item ? 'active' : ''} onClick={() => go(item)}><Icon size={17} />{label}</button>)}
@@ -29,6 +29,6 @@ export function Shell({ view, navigate, children }: Props) {
     </header>
     {open && <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(({ view: item, label, icon: Icon }) => <button key={item} className={view === item ? 'active' : ''} onClick={() => go(item)}><Icon size={18} />{label}</button>)}</nav>}
     <main>{children}</main>
-    <footer><div className="brand mini"><span className="brand-mark"><BookOpen size={16} /></span><span>Open Source<span>ED</span></span></div><p>Your learning stays in your browser.</p><a href="https://github.com/BlueRaddish/open-source-ed">Open source on GitHub</a></footer>
+    <footer><div className="brand mini"><span className="brand-mark"><BookOpen size={16} /></span><span>Open Sourc<span>ED</span></span></div><p>Your learning stays in your browser.</p><a href="https://github.com/BlueRaddish/open-sourced">Open source on GitHub</a></footer>
   </div>
 }

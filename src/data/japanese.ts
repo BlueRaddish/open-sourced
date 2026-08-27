@@ -16,7 +16,7 @@ function studySet(id: string, title: string, description: string, color: string,
     description,
     color,
     cards: cards(id, rows),
-    sources: ['Open SourceED original beginner Japanese examples'],
+    sources: ['Open SourcED original beginner Japanese examples'],
     createdAt,
     updatedAt: createdAt,
   }

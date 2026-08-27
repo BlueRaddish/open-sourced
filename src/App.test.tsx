@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { STORAGE_KEY } from './lib/storage'
 
-describe('Open SourceED app', () => {
+describe('Open SourcED app', () => {
   beforeEach(() => {
     localStorage.removeItem(STORAGE_KEY)
     sessionStorage.clear()
-    history.replaceState(null, '', '/open-source-ed/')
+    history.replaceState(null, '', '/open-sourced/')
   })
 
   afterEach(() => vi.unstubAllGlobals())

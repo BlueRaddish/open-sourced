@@ -1,10 +1,10 @@
-# Open SourceED
+# Open SourcED
 
-Open SourceED is an open-source, Quizlet-style learning workspace for any subject. Build a set by hand or generate an editable draft from source material, then study with flashcards, adaptive retrieval, and randomized mock tests.
+Open SourcED is an open-source, Quizlet-style learning workspace for any subject. Build a set by hand or generate an editable draft from source material, then study with flashcards, adaptive retrieval, and randomized mock tests.
 
-**Live static app:** https://blueraddish.github.io/open-source-ed/
+**Live static app:** https://blueraddish.github.io/open-sourced/
 
-![Open SourceED dashboard](docs/open-source-ed-desktop.png)
+![Open SourcED dashboard](docs/open-source-ed-desktop.png)
 
 ## Highlights
 
@@ -55,7 +55,7 @@ This runs lint, tests, browser TypeScript/build validation, and a separate serve
 
 Generation uses OpenRouter’s Chat Completions API with strict structured output. The model catalog is loaded from OpenRouter at runtime so the interface does not promise stale GPT, Claude, or Gemini versions. Only text models that advertise structured-output support appear.
 
-The browser flow uses OpenRouter OAuth with PKCE. The resulting user-controlled key is kept in `sessionStorage`, disappears when that tab session ends, and is never added to backups. Open SourceED never asks for a raw OpenAI, Anthropic, or Google API key. Visitors who have provider API access can add those keys in [OpenRouter BYOK settings](https://openrouter.ai/workspaces/default/byok), where OpenRouter encrypts and routes them. This does not connect consumer ChatGPT, Claude, or Gemini subscriptions.
+The browser flow uses OpenRouter OAuth with PKCE. The resulting user-controlled key is kept in `sessionStorage`, disappears when that tab session ends, and is never added to backups. Open SourcED never asks for a raw OpenAI, Anthropic, or Google API key. Visitors who have provider API access can add those keys in [OpenRouter BYOK settings](https://openrouter.ai/workspaces/default/byok), where OpenRouter encrypts and routes them. This does not connect consumer ChatGPT, Claude, or Gemini subscriptions.
 
 Free mode always requests `openrouter/free`. If free capacity or quota is exhausted, it stops without selecting a paid model. Paid/BYOK choices require a visitor-owned OpenRouter connection and an unchecked-by-default confirmation for each generation; the confirmation clears after the request. Published input and output rates are shown beside the selected model. If a BYOK user never wants OpenRouter credit fallback, they should enable **Never use shared capacity** in OpenRouter’s BYOK settings.
 
@@ -72,7 +72,7 @@ The public GitHub Pages workflow has no API secret.
 
 ## Suggest a generation style
 
-The built-in generation presets are community-editable starting points, not permanent prompt rules. If a wording change or a new niche preset would produce better study material, [open a GitHub issue](https://github.com/BlueRaddish/open-source-ed/issues/new) with the use case, what the current preset misses, and the prompt wording you suggest. A small non-sensitive example source and expected card style are especially helpful.
+The built-in generation presets are community-editable starting points, not permanent prompt rules. If a wording change or a new niche preset would produce better study material, [open a GitHub issue](https://github.com/BlueRaddish/open-sourced/issues/new) with the use case, what the current preset misses, and the prompt wording you suggest. A small non-sensitive example source and expected card style are especially helpful.
 
 ## Data and privacy
 

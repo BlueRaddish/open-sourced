@@ -11,4 +11,4 @@ app.post('/api/generate', async (request, response) => {
   try { response.json(await generateStudySet(request.body)) }
   catch (error) { const result = publicError(error); console.error(error); response.status(result.status).json({ error: result.message }) }
 })
-app.listen(port, () => console.log(`Open SourceED AI server listening on http://localhost:${port}`))
+app.listen(port, () => console.log(`Open SourcED AI server listening on http://localhost:${port}`))

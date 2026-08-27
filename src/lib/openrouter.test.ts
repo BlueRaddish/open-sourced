@@ -4,14 +4,14 @@ import { completeOpenRouterOAuth, generateWithOpenRouter, hasOpenRouterSession, 
 describe('per-user OpenRouter connection', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    history.replaceState(null, '', '/open-source-ed/?code=test-code')
+    history.replaceState(null, '', '/open-sourced/?code=test-code')
     sessionStorage.setItem('open-source-ed.openrouter.pkce-verifier', 'test-verifier')
   })
 
   afterEach(() => {
     vi.unstubAllGlobals()
     sessionStorage.clear()
-    history.replaceState(null, '', '/open-source-ed/')
+    history.replaceState(null, '', '/open-sourced/')
   })
 
   it('exchanges OAuth and defaults generation to the free router', async () => {

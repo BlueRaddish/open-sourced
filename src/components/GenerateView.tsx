@@ -51,7 +51,7 @@ export function GenerateView({ onDraft }: Props) {
   }
 
   const generate = async () => {
-    if (topic.trim().length < 2) return setError('Tell Open SourceED what topic to focus on.')
+    if (topic.trim().length < 2) return setError('Tell Open SourcED what topic to focus on.')
     if (resource.trim().length < 100) return setError('Add at least a short paragraph of source material.')
     const exactCount = count.trim() ? Number(count) : undefined
     if (exactCount !== undefined && (!Number.isInteger(exactCount) || exactCount < 2 || exactCount > 100)) return setError('Use a whole number from 2 to 100, or leave card count blank for automatic coverage.')
@@ -81,7 +81,7 @@ export function GenerateView({ onDraft }: Props) {
   const applyPreset = (id: string) => { const next = generationPresets.find((item) => item.id === id); if (next) { setPreset(id); setInstructions(next.instructions) } }
   const price = (value: number) => value < .01 ? `$${value.toFixed(3)}` : `$${value.toFixed(2)}`
   return <section className="page-width page-section generate-page">
-    <div className="page-title"><div><span className="eyebrow"><Sparkles size={15} /> Source-grounded AI</span><h1>Turn resources into a first draft</h1><p>Add the material you trust. Open SourceED extracts the text, drafts focused cards, and sends everything to the normal editor for your review.</p></div></div>
+    <div className="page-title"><div><span className="eyebrow"><Sparkles size={15} /> Source-grounded AI</span><h1>Turn resources into a first draft</h1><p>Add the material you trust. Open SourcED extracts the text, drafts focused cards, and sends everything to the normal editor for your review.</p></div></div>
     <div className="generate-layout"><div className="generator-panel">
       <div className={`ai-connection ${connected || serverReady ? 'connected' : ''}`}><div><ShieldCheck /><span><b>{connected ? 'Your OpenRouter account is connected' : serverReady ? 'Free generation is ready' : 'Connect OpenRouter to generate'}</b><small>{connected ? 'Choose Free or a paid/BYOK model. Your temporary key stays in this browser tab.' : serverReady ? 'Free works now; connect your own account only if you want more model choices.' : 'Every visitor connects separately, so there is no shared project key or quota.'}</small></span></div>{connected ? <button className="secondary" onClick={() => { disconnectOpenRouter(); setConnected(false); chooseFamily('free') }}>Disconnect</button> : <button className="secondary" disabled={connecting} onClick={() => { setConnecting(true); beginOpenRouterOAuth() }}>{connecting ? 'Connecting…' : 'Connect OpenRouter'}</button>}</div>
 
@@ -96,7 +96,7 @@ export function GenerateView({ onDraft }: Props) {
         {paid && <div className="paid-model-options">
           <label><span>Exact {family === 'openai' ? 'GPT' : family === 'anthropic' ? 'Claude' : 'Gemini'} model</span><select value={effectiveModel} onChange={(event) => { setSelectedModel(event.target.value); setPaidConfirmed(false) }} disabled={!familyModels.length}>{familyModels.length ? familyModels.map((model) => <option key={model.id} value={model.id}>{model.name}</option>) : <option value="">No compatible models loaded</option>}</select>{chosenModel && <small className="model-price">Published input/output rates: {price(chosenModel.promptPerMillion)} / {price(chosenModel.completionPerMillion)} per 1M tokens. Final charges are set by OpenRouter.</small>}</label>
           {modelError && <p className="form-error" role="alert">{modelError}</p>}
-          <div className="paid-model-warning"><Lock size={20} /><div><b>Your account, your cost</b><span>This uses your connected OpenRouter balance or a provider API key you configure in OpenRouter BYOK. Open SourceED never asks for the raw provider key and does not sign into ChatGPT, Claude, or Gemini consumer apps.</span><a href="https://openrouter.ai/workspaces/default/byok" target="_blank" rel="noreferrer">Configure provider keys in OpenRouter</a></div></div>
+          <div className="paid-model-warning"><Lock size={20} /><div><b>Your account, your cost</b><span>This uses your connected OpenRouter balance or a provider API key you configure in OpenRouter BYOK. Open SourcED never asks for the raw provider key and does not sign into ChatGPT, Claude, or Gemini consumer apps.</span><a href="https://openrouter.ai/workspaces/default/byok" target="_blank" rel="noreferrer">Configure provider keys in OpenRouter</a></div></div>
           <label className="paid-confirm"><input type="checkbox" checked={paidConfirmed} onChange={(event) => setPaidConfirmed(event.target.checked)} /><span>Allow this one generation to use my connected account’s paid or BYOK quota.</span></label>
         </div>}
       </fieldset>
@@ -113,6 +113,6 @@ export function GenerateView({ onDraft }: Props) {
       {error && <div className="form-error" role="alert">{error}</div>}
       <button className="primary generate-button" onClick={generate} disabled={loading || extracting || !ready}>{loading ? <><LoaderCircle className="spin" /> Building your draft…</> : <><Sparkles /> Generate editable cards <ArrowRight /></>}</button>
       <p className="generation-save-note">This creates a draft only. You’ll review and edit every card in Create before anything is saved.</p>
-    </div><aside className="trust-panel"><ShieldCheck /><h2>Private connection, explicit cost</h2><p>Free is always the default. Choosing GPT, Claude, or Gemini requires your own OpenRouter connection and a fresh cost confirmation for every generation.</p><hr /><h3>What stays protected</h3><ul><li>No shared Open SourceED API key</li><li>No raw provider keys entered here</li><li>Requests avoid data-collecting providers</li><li>Generated cards return as an editable draft</li></ul><p className="small-print">Your temporary OAuth key remains in this browser tab. Always review generated cards against the original source.</p></aside></div>
+    </div><aside className="trust-panel"><ShieldCheck /><h2>Private connection, explicit cost</h2><p>Free is always the default. Choosing GPT, Claude, or Gemini requires your own OpenRouter connection and a fresh cost confirmation for every generation.</p><hr /><h3>What stays protected</h3><ul><li>No shared Open SourcED API key</li><li>No raw provider keys entered here</li><li>Requests avoid data-collecting providers</li><li>Generated cards return as an editable draft</li></ul><p className="small-print">Your temporary OAuth key remains in this browser tab. Always review generated cards against the original source.</p></aside></div>
   </section>
 }

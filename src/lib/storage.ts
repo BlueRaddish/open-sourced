@@ -40,13 +40,13 @@ export function downloadBackup(state: StudyState) {
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
-  anchor.download = `open-source-ed-backup-${new Date().toISOString().slice(0, 10)}.json`
+  anchor.download = `open-sourced-backup-${new Date().toISOString().slice(0, 10)}.json`
   anchor.click()
   URL.revokeObjectURL(url)
 }
 
 export async function readBackup(file: File): Promise<StudyState> {
   const parsed = JSON.parse(await file.text()) as StudyState
-  if (parsed.version !== 1 || !Array.isArray(parsed.sets) || typeof parsed.progress !== 'object') throw new Error('That is not a valid Open SourceED backup.')
+  if (parsed.version !== 1 || !Array.isArray(parsed.sets) || typeof parsed.progress !== 'object') throw new Error('That is not a valid Open SourcED backup.')
   return normalizeState(parsed)
 }

@@ -53,7 +53,7 @@ export async function decodeShareToken(token: string): Promise<StudySet> {
   const json = new TextDecoder().decode(await decompress(prefix, fromBase64Url(value || '')))
   if (json.length > MAX_JSON_LENGTH) throw new Error('That shared set is too large to open safely.')
   const parsed = JSON.parse(json) as Partial<CompactSet>
-  if (parsed.v !== 1 || typeof parsed.t !== 'string' || !Array.isArray(parsed.cards) || parsed.cards.length < 2 || parsed.cards.length > 100) throw new Error('That is not a valid Open SourceED share link.')
+  if (parsed.v !== 1 || typeof parsed.t !== 'string' || !Array.isArray(parsed.cards) || parsed.cards.length < 2 || parsed.cards.length > 100) throw new Error('That is not a valid Open SourcED share link.')
   const clean = (value: unknown, max: number) => typeof value === 'string' ? value.slice(0, max) : ''
   const cards = parsed.cards.map((card) => {
     const definition = clean(card?.[1], 3_000)

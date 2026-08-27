@@ -102,7 +102,7 @@ export async function generateWithOpenRouter({ topic, resource, count, instructi
   }
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.origin, 'X-Title': 'Open SourceED' },
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.origin, 'X-Title': 'Open SourcED' },
     body: JSON.stringify({
       model: selectedModel,
       messages: [
