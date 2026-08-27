@@ -1,10 +1,12 @@
 import { demoSet } from '../data/demo'
-import type { StudyState } from '../types'
+import type { Preferences, StudyState } from '../types'
 
 export const STORAGE_KEY = 'open-source-ed.library.v1'
 const LEGACY_STORAGE_KEY = 'studyforge.library.v1'
 
-export const initialState = (): StudyState => ({ version: 1, sets: [demoSet], progress: {}, attempts: [], activityDates: [] })
+export const defaultPreferences: Preferences = { theme: 'system', palette: 'poppy' }
+
+export const initialState = (): StudyState => ({ version: 1, sets: [demoSet], progress: {}, attempts: [], activityDates: [], preferences: defaultPreferences })
 
 export function loadState(): StudyState {
   try {
@@ -12,7 +14,7 @@ export function loadState(): StudyState {
     if (!raw) return initialState()
     const parsed = JSON.parse(raw) as StudyState
     if (parsed.version !== 1 || !Array.isArray(parsed.sets)) return initialState()
-    return parsed
+    return { ...parsed, preferences: parsed.preferences ?? defaultPreferences }
   } catch {
     return initialState()
   }
@@ -35,5 +37,5 @@ export function downloadBackup(state: StudyState) {
 export async function readBackup(file: File): Promise<StudyState> {
   const parsed = JSON.parse(await file.text()) as StudyState
   if (parsed.version !== 1 || !Array.isArray(parsed.sets) || typeof parsed.progress !== 'object') throw new Error('That is not a valid Open SourceED backup.')
-  return parsed
+  return { ...parsed, preferences: parsed.preferences ?? defaultPreferences }
 }

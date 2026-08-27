@@ -17,8 +17,10 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Search, duplicate, delete, and CSV export for individual sets
 - JSON backup and restore for the complete local library
 - Responsive, accessible UI with a local-first data model
+- System, light, and dark appearance modes with four color palettes
+- Zero-server, unlisted share links with read-only preview and local import
 
-The GitHub Pages build supports every manual and study feature. AI generation requires the included server endpoint to be deployed with an OpenAI API key; keys are never accepted or stored by the browser.
+The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth and uses their own free quota. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
 
 ## Run locally
 
@@ -26,12 +28,10 @@ Use Node.js 22.13 or newer.
 
 ```bash
 npm ci
-copy .env.example .env
-# Add your OPENAI_API_KEY to .env
 npm run dev
 ```
 
-The app runs through Vite and proxies `/api` requests to the local Express server on port 8787. If you do not configure a key, the rest of Open SourceED still works normally.
+The app runs through Vite and starts the optional Express endpoint on port 8787. OpenRouter supports OAuth callbacks on localhost, so **Connect OpenRouter** works without a local API key. If you want a managed free-only endpoint instead, copy `.env.example` to `.env` and add `OPENROUTER_API_KEY`.
 
 Quality gate:
 
@@ -41,22 +41,28 @@ npm run check
 
 This runs lint, tests, browser TypeScript/build validation, and a separate server type-check.
 
-## Secure AI setup
+## Free-only AI setup
 
-Generation uses OpenAI's Responses API with strict structured output. The server validates inputs, limits source text to 60,000 characters, and returns only a study-set schema. The default model is `gpt-5.4-mini` and can be changed with `OPENAI_MODEL`.
+Generation uses OpenRouter’s Chat Completions API with strict structured output. The browser and optional server both use `openrouter/free`, which automatically selects a compatible free model.
 
-Never put `OPENAI_API_KEY` in frontend code or in a variable beginning with `VITE_`. Vite exposes those variables to the browser bundle.
+The browser flow uses OpenRouter OAuth with PKCE. The resulting user-controlled key is kept in `sessionStorage`, disappears when that tab session ends, and is never added to backups. Every browser request hardcodes `openrouter/free`. The optional server rejects every identifier except `openrouter/free` or one ending in `:free`. Neither path contains an OpenAI client or falls back to a paid model. When OpenRouter returns a free-tier limit or capacity error, generation stops with a clear message.
 
-Two supported deployments:
+Two supported modes:
 
-1. **One Vercel project:** import this repository, set `OPENAI_API_KEY` as a server environment variable, and deploy. `api/generate.ts` becomes the serverless endpoint.
-2. **Static frontend + separate API:** deploy `server/index.ts` on a Node host, set `ALLOWED_ORIGIN`, and build the frontend with `VITE_AI_ENDPOINT=https://your-host/api/generate`.
+1. **Static and zero-cost:** deploy to GitHub Pages. Each visitor chooses **Connect OpenRouter** and consumes only their own free quota.
+2. **Optional managed endpoint:** deploy the repository on Vercel with `OPENROUTER_API_KEY`, or host `server/index.ts` and configure `VITE_AI_ENDPOINT`. Never put the key in a `VITE_` variable.
 
-The public GitHub Pages workflow intentionally has no API secret and deploys the static experience only.
+The public GitHub Pages workflow has no API secret.
 
 ## Data and privacy
 
-Sets, card-level proficiency, streaks, and test attempts live in browser `localStorage`. Uploaded resources are extracted in the browser and are not saved with the library. Their text is sent to the configured AI endpoint only when **Generate editable cards** is pressed. Use **Progress → Export backup** before clearing browser data or switching devices.
+Sets, card-level proficiency, streaks, test attempts, and appearance preferences live in browser `localStorage`. This storage belongs to the current website origin and browser profile—it is not a GitHub database and does not sync between browsers or devices. The temporary OpenRouter OAuth key lives separately in tab-scoped `sessionStorage`. Uploaded resources are extracted in the browser and are not saved with the library. Their text is sent to OpenRouter only when **Generate editable cards** is pressed. Use **Settings → Export a portable backup** or **Progress → Export backup** before clearing browser data or switching devices.
+
+## Sharing without a database
+
+Choose **Share** on a study set to create an unlisted link. A compressed, read-only copy of the set is stored in the URL fragment after `#share=`. URL fragments are decoded in the recipient’s browser and are not sent to GitHub Pages. Recipients can preview the material and save an independent copy into their own local library.
+
+This keeps sharing free and serverless, but there is no searchable public catalog, owner-controlled updating, or usage analytics. Very large sets may be too long for a reliable link and should be exported as CSV instead.
 
 ## CSV / TSV format
 
@@ -74,7 +80,8 @@ Comma-separated rows are also accepted. Individual sets can be exported as CSV f
 - `localStorage` persistence with versioned JSON backups
 - PDF.js for browser-side PDF text extraction
 - Express local API and Vercel serverless adapter
-- OpenAI JavaScript SDK + Responses API structured output
+- Per-user OpenRouter OAuth PKCE + free models via `fetch`
+- Optional Express/Vercel free-only generation endpoint
 - Vitest + Testing Library and Oxlint
 
 See [DESIGN.md](DESIGN.md) for the product and interface rationale.

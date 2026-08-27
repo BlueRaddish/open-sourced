@@ -1,4 +1,12 @@
-export type View = 'home' | 'library' | 'create' | 'set' | 'cards' | 'learn' | 'test' | 'progress' | 'generate'
+export type View = 'home' | 'library' | 'create' | 'set' | 'cards' | 'learn' | 'test' | 'progress' | 'generate' | 'settings' | 'share'
+
+export type ThemeMode = 'system' | 'light' | 'dark'
+export type ColorPalette = 'poppy' | 'ocean' | 'violet' | 'forest'
+
+export type Preferences = {
+  theme: ThemeMode
+  palette: ColorPalette
+}
 
 export type StudyCard = {
   id: string
@@ -44,6 +52,7 @@ export type StudyState = {
   progress: Record<string, Record<string, CardProgress>>
   attempts: TestAttempt[]
   activityDates: string[]
+  preferences: Preferences
 }
 
 export type GeneratedSet = Pick<StudySet, 'title' | 'subject' | 'description' | 'cards'>

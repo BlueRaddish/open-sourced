@@ -1,8 +1,9 @@
 import { ArrowRight, FileText, FileUp, LoaderCircle, ShieldCheck, Sparkles, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { GeneratedSet, StudyCard } from '../types'
 import { extractFile } from '../lib/resources'
 import { makeId } from '../lib/study'
+import { beginOpenRouterOAuth, completeOpenRouterOAuth, disconnectOpenRouter, generateWithOpenRouter, hasOpenRouterSession } from '../lib/openrouter'
 
 type Props = { onDraft: (draft: GeneratedSet, sources: string[]) => void }
 
@@ -15,6 +16,20 @@ export function GenerateView({ onDraft }: Props) {
   const [loading, setLoading] = useState(false)
   const [extracting, setExtracting] = useState(false)
   const [error, setError] = useState('')
+  const [connected, setConnected] = useState(hasOpenRouterSession)
+  const [serverReady, setServerReady] = useState(false)
+  const [connecting, setConnecting] = useState(new URLSearchParams(window.location.search).has('code'))
+
+  useEffect(() => {
+    let active = true
+    completeOpenRouterOAuth()
+      .then((completed) => { if (active && completed) setConnected(true) })
+      .catch((caught) => { if (active) setError(caught instanceof Error ? caught.message : 'OpenRouter could not be connected.') })
+      .finally(() => { if (active) setConnecting(false) })
+    fetch('/api/health').then((response) => response.ok ? response.json() : undefined).then((body) => { if (active && body?.configured && body?.mode === 'free-only') setServerReady(true) }).catch(() => undefined)
+    return () => { active = false }
+  }, [])
+
   const addFiles = async (files: FileList | null) => {
     if (!files?.length) return
     setExtracting(true); setError('')
@@ -26,30 +41,39 @@ export function GenerateView({ onDraft }: Props) {
     } catch { setError('One of those files could not be read. Try PDF, TXT, Markdown, CSV, or JSON.') }
     finally { setExtracting(false) }
   }
+
   const generate = async () => {
     if (topic.trim().length < 2) return setError('Tell Open SourceED what topic to focus on.')
     if (resource.trim().length < 100) return setError('Add at least a short paragraph of source material.')
     setLoading(true); setError('')
     try {
-      const endpoint = import.meta.env.VITE_AI_ENDPOINT || '/api/generate'
-      const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, resource, count, difficulty }) })
-      const body = await response.json().catch(() => ({})) as GeneratedSet & { error?: string }
-      if (!response.ok) throw new Error(body.error || (response.status === 404 ? 'AI generation is not connected on this deployment.' : 'Generation failed.'))
+      let body: GeneratedSet
+      if (connected) body = await generateWithOpenRouter({ topic, resource, count, difficulty })
+      else {
+        const endpoint = import.meta.env.VITE_AI_ENDPOINT || '/api/generate'
+        const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, resource, count, difficulty }) })
+        const result = await response.json().catch(() => ({})) as GeneratedSet & { error?: string }
+        if (!response.ok) throw new Error(result.error || (response.status === 404 ? 'Connect OpenRouter to use your own free quota.' : 'Generation failed.'))
+        body = result
+      }
       const cards: StudyCard[] = body.cards.map((card) => ({ ...card, id: makeId() }))
       onDraft({ ...body, cards }, sources.length ? sources : ['Pasted source'])
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Generation failed.') }
     finally { setLoading(false) }
   }
+
+  const ready = connected || serverReady
   return <section className="page-width page-section generate-page">
     <div className="page-title"><div><span className="eyebrow"><Sparkles size={15} /> Source-grounded AI</span><h1>Turn resources into a first draft</h1><p>Add the material you trust. Open SourceED extracts the text, drafts focused cards, and sends everything to the normal editor for your review.</p></div></div>
     <div className="generate-layout"><div className="generator-panel">
+      <div className={`ai-connection ${ready ? 'connected' : ''}`}><div><ShieldCheck /><span><b>{connected ? 'Your free OpenRouter quota is connected' : serverReady ? 'Free-only server is connected' : 'Connect your own free quota'}</b><small>{connected ? 'The temporary key stays in this browser tab. Other visitors cannot use it.' : serverReady ? 'This deployment accepts only free OpenRouter models.' : 'Each visitor signs into OpenRouter separately, so nobody can consume your quota.'}</small></span></div>{connected ? <button className="secondary" onClick={() => { disconnectOpenRouter(); setConnected(false) }}>Disconnect</button> : !serverReady && <button className="secondary" disabled={connecting} onClick={() => { setConnecting(true); beginOpenRouterOAuth() }}>{connecting ? 'Connecting…' : 'Connect OpenRouter'}</button>}</div>
       <label><span>What are you studying? *</span><input value={topic} onChange={(event) => setTopic(event.target.value)} placeholder="e.g. Photosynthesis for AP Biology" /></label>
       <div className="form-grid"><label><span>Number of cards</span><select value={count} onChange={(event) => setCount(Number(event.target.value))}><option value={8}>8 cards</option><option value={15}>15 cards</option><option value={25}>25 cards</option><option value={40}>40 cards</option></select></label><label><span>Difficulty</span><select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label></div>
       <label><span>Paste source material *</span><textarea rows={12} maxLength={60000} value={resource} onChange={(event) => setResource(event.target.value)} placeholder="Paste lecture notes, a study guide, an article, or any source text here…" /><small>{resource.length.toLocaleString()} / 60,000 characters</small></label>
       <div className="upload-zone"><FileUp size={25} /><div><b>{extracting ? 'Reading files…' : 'Or add resource files'}</b><span>PDF, TXT, Markdown, CSV, or JSON</span></div><label className="secondary file-button">Choose files<input type="file" multiple accept=".pdf,.txt,.md,.markdown,.csv,.json,text/*,application/pdf" onChange={(event) => addFiles(event.target.files)} /></label></div>
       {!!sources.length && <div className="source-chips">{sources.map((source) => <span key={source}><FileText size={14} />{source}<button onClick={() => setSources((current) => current.filter((item) => item !== source))} aria-label={`Remove ${source}`}><X size={13} /></button></span>)}</div>}
       {error && <div className="form-error" role="alert">{error}</div>}
-      <button className="primary generate-button" onClick={generate} disabled={loading || extracting}>{loading ? <><LoaderCircle className="spin" /> Building your draft…</> : <><Sparkles /> Generate editable cards <ArrowRight /></>}</button>
-    </div><aside className="trust-panel"><ShieldCheck /><h2>Your key stays server-side</h2><p>Resource text is sent only when you press generate. The browser never receives or stores the API key.</p><hr /><h3>Good source material</h3><ul><li>Course notes and study guides</li><li>Textbook excerpts you may use</li><li>PDF handbooks and reference sheets</li><li>Your own outlines and summaries</li></ul><p className="small-print">Always review generated cards against the original source before relying on them.</p></aside></div>
+      <button className="primary generate-button" onClick={generate} disabled={loading || extracting || !ready}>{loading ? <><LoaderCircle className="spin" /> Building your draft…</> : <><Sparkles /> Generate editable cards <ArrowRight /></>}</button>
+    </div><aside className="trust-panel"><ShieldCheck /><h2>Free-only by design</h2><p>Generation always uses <code>openrouter/free</code>. When that person’s free quota runs out, it stops—there is no paid fallback and no shared project credit pool.</p><hr /><h3>Good source material</h3><ul><li>Course notes and study guides</li><li>Textbook excerpts you may use</li><li>PDF handbooks and reference sheets</li><li>Your own outlines and summaries</li></ul><p className="small-print">OAuth keys remain in the connecting visitor’s browser tab. Always review generated cards against the original source.</p></aside></div>
   </section>
 }

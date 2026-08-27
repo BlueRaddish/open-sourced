@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, House, Library, Menu, Plus, Sparkles, X } from 'lucide-react'
+import { BarChart3, BookOpen, House, Library, Menu, Plus, Settings, Sparkles, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import type { View } from '../types'
 
@@ -10,6 +10,7 @@ const nav = [
   { view: 'create' as View, label: 'Create', icon: Plus },
   { view: 'generate' as View, label: 'Generate', icon: Sparkles },
   { view: 'progress' as View, label: 'Progress', icon: BarChart3 },
+  { view: 'settings' as View, label: 'Settings', icon: Settings },
 ]
 
 export function Shell({ view, navigate, children }: Props) {
