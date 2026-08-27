@@ -24,10 +24,12 @@ describe('free-only model enforcement', () => {
     process.env.OPENROUTER_API_KEY = 'test-key'
     const request = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: { message: 'Rate limited' } }), { status: 429, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', request)
-    await expect(generateStudySet({ topic: 'Cells', resource: 'A'.repeat(120), count: 8, difficulty: 'beginner' })).rejects.toThrow(/free OpenRouter quota/i)
+    await expect(generateStudySet({ topic: 'Cells', resource: 'A'.repeat(120) })).rejects.toThrow(/free OpenRouter quota/i)
     const body = JSON.parse(request.mock.calls[0][1].body as string)
     expect(body.model).toBe('openrouter/free')
     expect(body.provider).toEqual({ require_parameters: true, data_collection: 'deny' })
+    expect(body.messages[0].content).toContain('Choose the number of cards from the source itself.')
+    expect(body.response_format.json_schema.schema.properties.cards).toMatchObject({ minItems: 2, maxItems: 100 })
   })
 
   it('keeps author directions separate from source material', async () => {
@@ -35,9 +37,11 @@ describe('free-only model enforcement', () => {
     const generated = { title: 'Cells', subject: 'Biology', description: 'Basics', cards: [{ term: 'Cell', definition: 'Basic unit', note: '' }, { term: 'Nucleus', definition: 'Contains DNA', note: '' }] }
     const request = vi.fn().mockResolvedValue(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(generated) } }] }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', request)
-    await generateStudySet({ topic: 'Cells', resource: 'A'.repeat(120), count: 8, difficulty: 'beginner', instructions: 'Use scenario questions.' })
+    await generateStudySet({ topic: 'Cells', resource: 'A'.repeat(120), count: 23, instructions: 'Use scenario questions.' })
     const body = JSON.parse(request.mock.calls[0][1].body as string)
     expect(body.messages[1].content).toContain('AUTHOR DIRECTIONS (style and emphasis only):\nUse scenario questions.')
     expect(body.messages[1].content).toContain('SOURCE MATERIAL:')
+    expect(body.messages[0].content).toContain('Produce exactly 23 cards')
+    expect(body.response_format.json_schema.schema.properties.cards).toMatchObject({ minItems: 23, maxItems: 23 })
   })
 })

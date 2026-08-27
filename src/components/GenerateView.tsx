@@ -11,8 +11,7 @@ type Props = { onDraft: (draft: GeneratedSet, sources: string[]) => void }
 export function GenerateView({ onDraft }: Props) {
   const [topic, setTopic] = useState('')
   const [resource, setResource] = useState('')
-  const [count, setCount] = useState(15)
-  const [difficulty, setDifficulty] = useState('intermediate')
+  const [count, setCount] = useState('')
   const [family, setFamily] = useState<'free' | ModelFamily>('free')
   const [models, setModels] = useState<GenerationModel[]>([])
   const [selectedModel, setSelectedModel] = useState('')
@@ -54,13 +53,15 @@ export function GenerateView({ onDraft }: Props) {
   const generate = async () => {
     if (topic.trim().length < 2) return setError('Tell Open SourceED what topic to focus on.')
     if (resource.trim().length < 100) return setError('Add at least a short paragraph of source material.')
+    const exactCount = count.trim() ? Number(count) : undefined
+    if (exactCount !== undefined && (!Number.isInteger(exactCount) || exactCount < 2 || exactCount > 100)) return setError('Use a whole number from 2 to 100, or leave card count blank for automatic coverage.')
     setLoading(true); setError('')
     try {
       let body: GeneratedSet
-      if (connected) body = await generateWithOpenRouter({ topic, resource, count, difficulty, instructions, model: family === 'free' ? 'openrouter/free' : effectiveModel })
+      if (connected) body = await generateWithOpenRouter({ topic, resource, count: exactCount, instructions, model: family === 'free' ? 'openrouter/free' : effectiveModel })
       else {
         const endpoint = import.meta.env.VITE_AI_ENDPOINT || '/api/generate'
-        const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, resource, count, difficulty, instructions }) })
+        const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, resource, count: exactCount, instructions }) })
         const result = await response.json().catch(() => ({})) as GeneratedSet & { error?: string }
         if (!response.ok) throw new Error(result.error || (response.status === 404 ? 'Connect OpenRouter to use your own free quota.' : 'Generation failed.'))
         body = result
@@ -101,7 +102,7 @@ export function GenerateView({ onDraft }: Props) {
       </fieldset>
 
       <label><span>What are you studying? *</span><input value={topic} onChange={(event) => setTopic(event.target.value)} placeholder="e.g. Photosynthesis for AP Biology" /></label>
-      <div className="form-grid"><label><span>Number of cards</span><select value={count} onChange={(event) => setCount(Number(event.target.value))}><option value={8}>8 cards</option><option value={15}>15 cards</option><option value={25}>25 cards</option><option value={40}>40 cards</option></select></label><label><span>Difficulty</span><select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label></div>
+      <label className="exact-count"><span>Exact number of cards (optional)</span><input type="number" inputMode="numeric" min={2} max={100} step={1} value={count} onChange={(event) => setCount(event.target.value)} placeholder="Automatic—AI covers the source as fully as needed" /><small>Leave blank to let the model choose the useful number of cards and infer the learning level from your material.</small></label>
       <fieldset className="generation-guidance"><legend>Generation style</legend>
         <div className="preset-grid">{generationPresets.map((item) => <button type="button" key={item.id} className={preset === item.id ? 'selected' : ''} onClick={() => applyPreset(item.id)} aria-pressed={preset === item.id}><b>{item.label}</b><small>{item.description}</small></button>)}</div>
         <label><span>Additional instructions (optional)</span><textarea rows={4} maxLength={2000} value={instructions} onChange={(event) => { setInstructions(event.target.value); setPreset('custom') }} placeholder="For example: Focus on clinical scenarios, keep answers concise, and include common misconceptions." /><small>{instructions.length.toLocaleString()} / 2,000 characters. Edit a preset or write your own directions.</small></label>

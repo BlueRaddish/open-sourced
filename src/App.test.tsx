@@ -75,6 +75,8 @@ describe('Open SourceED app', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /create a set/i }))
     fireEvent.click(screen.getByRole('button', { name: /generate with ai/i }))
+    expect(screen.getByLabelText(/exact number of cards/i)).toHaveValue(null)
+    expect(screen.queryByLabelText(/difficulty/i)).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /language learning/i }))
     expect((screen.getByLabelText(/additional instructions/i) as HTMLTextAreaElement).value).toContain('natural usage')
     fireEvent.change(screen.getByLabelText(/additional instructions/i), { target: { value: 'Prioritize scientific processes and comparisons.' } })

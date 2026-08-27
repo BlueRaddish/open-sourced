@@ -12,6 +12,7 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Manual card editor with notes and CSV/TSV bulk import
 - AI drafts grounded in pasted text, Markdown, CSV, JSON, or PDF resources
 - Five editable generation presets plus custom author instructions
+- Source-led card count and learning level, with an optional exact-count override
 - Free generation by default, with opt-in GPT, Claude, and Gemini model choices
 - Review-before-save workflow for generated material
 - Flip-style flashcards, adaptive learning, and 4-choice mock tests
@@ -28,6 +29,8 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth. Free generation is the default; visitors may explicitly choose a current GPT, Claude, or Gemini model that uses only their connected OpenRouter balance or provider keys. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
 
 AI generation is available both from the main navigation and inside **Create**. It produces a pre-filled, editable draft in the standard set editor; it never saves directly to the library. The user can revise or remove any generated card before choosing **Save set**.
+
+Card count and learning level are source-led by default. With the optional exact-count field blank, the model chooses as many useful cards as the material needs without padding or duplication and infers the appropriate depth and terminology from the resource. Entering a whole number from 2–100 requests that exact number instead.
 
 ## Run locally
 
@@ -66,6 +69,10 @@ Two supported modes:
 2. **Optional managed endpoint:** deploy the repository on Vercel with `OPENROUTER_API_KEY`, or host `server/index.ts` and configure `VITE_AI_ENDPOINT`. Never put the key in a `VITE_` variable.
 
 The public GitHub Pages workflow has no API secret.
+
+## Suggest a generation style
+
+The built-in generation presets are community-editable starting points, not permanent prompt rules. If a wording change or a new niche preset would produce better study material, [open a GitHub issue](https://github.com/BlueRaddish/open-source-ed/issues/new) with the use case, what the current preset misses, and the prompt wording you suggest. A small non-sensitive example source and expected card style are especially helpful.
 
 ## Data and privacy
 

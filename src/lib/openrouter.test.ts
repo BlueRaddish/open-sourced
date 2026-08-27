@@ -20,11 +20,14 @@ describe('per-user OpenRouter connection', () => {
     vi.stubGlobal('fetch', request)
     expect(await completeOpenRouterOAuth()).toBe(true)
     expect(hasOpenRouterSession()).toBe(true)
-    await generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120), count: 4, difficulty: 'beginner', instructions: 'Focus on organelle comparisons.' })
+    await generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120), instructions: 'Focus on organelle comparisons.' })
     const body = JSON.parse(request.mock.calls[1][1].body as string)
     expect(body.model).toBe('openrouter/free')
     expect(body.provider).toEqual({ require_parameters: true, data_collection: 'deny' })
     expect(body.messages[1].content).toContain('Focus on organelle comparisons.')
+    expect(body.messages[0].content).toContain('Choose the number of cards from the source itself.')
+    expect(body.messages[0].content).toContain('Infer the appropriate depth')
+    expect(body.response_format.json_schema.schema.properties.cards).toMatchObject({ minItems: 2, maxItems: 100 })
   })
 
   it('surfaces free quota exhaustion without retrying another model', async () => {
@@ -32,7 +35,7 @@ describe('per-user OpenRouter connection', () => {
       .mockResolvedValueOnce(new Response(JSON.stringify({ error: { message: 'Rate limited' } }), { status: 429, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', request)
     await completeOpenRouterOAuth()
-    await expect(generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120), count: 4, difficulty: 'beginner' })).rejects.toThrow(/free OpenRouter quota/i)
+    await expect(generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120) })).rejects.toThrow(/free OpenRouter quota/i)
     expect(request).toHaveBeenCalledTimes(2)
   })
 
@@ -41,10 +44,12 @@ describe('per-user OpenRouter connection', () => {
       .mockResolvedValueOnce(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ title: 'Cells', subject: 'Biology', description: 'Basics', cards: [] }) } }] }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', request)
     await completeOpenRouterOAuth()
-    await generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120), count: 4, difficulty: 'advanced', model: 'anthropic/claude-sonnet-4.5' })
+    await generateWithOpenRouter({ topic: 'Cells', resource: 'A'.repeat(120), count: 17, model: 'anthropic/claude-sonnet-4.5' })
     const body = JSON.parse(request.mock.calls[1][1].body as string)
     expect(body.model).toBe('anthropic/claude-sonnet-4.5')
     expect(body.provider.data_collection).toBe('deny')
+    expect(body.messages[0].content).toContain('Produce exactly 17 cards')
+    expect(body.response_format.json_schema.schema.properties.cards).toMatchObject({ minItems: 17, maxItems: 17 })
   })
 
   it('rejects model identifiers outside supported families', () => {
