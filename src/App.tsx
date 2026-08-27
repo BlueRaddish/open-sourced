@@ -71,21 +71,26 @@ export default function App() {
   const duplicate = () => {
     if (!selected) return
     const now = new Date().toISOString()
-    const copy: StudySet = { ...selected, id: makeId(), title: `${selected.title} (copy)`, cards: selected.cards.map((card) => ({ ...card, id: makeId() })), createdAt: now, updatedAt: now }
+    const copy: StudySet = { ...selected, id: makeId(), title: `${selected.title} (copy)`, archived: false, cards: selected.cards.map((card) => ({ ...card, id: makeId() })), createdAt: now, updatedAt: now }
     saveSet(copy)
+  }
+  const toggleArchive = () => {
+    if (!selected) return
+    setState((current) => ({ ...current, sets: current.sets.map((set) => set.id === selected.id ? { ...set, archived: !set.archived, updatedAt: new Date().toISOString() } : set) }))
+    setView('library')
   }
   const restore = async (file: File) => { try { const next = await readBackup(file); setState(next); setSelectedId(next.sets[0]?.id ?? ''); setView('library') } catch (error) { alert(error instanceof Error ? error.message : 'Could not restore backup.') } }
   const reset = () => { if (confirm('Reset your entire Open SourceED library and progress to the starter set?')) { const next = initialState(); setState(next); setSelectedId(next.sets[0].id); setView('home') } }
   let content
-  if (view === 'home') content = <Home sets={state.sets} progress={state.progress} activityDates={state.activityDates} openSet={openSet} navigate={navigate} />
+  if (view === 'home') content = <Home sets={state.sets.filter((set) => !set.archived)} progress={state.progress} activityDates={state.activityDates} openSet={openSet} navigate={navigate} />
   else if (view === 'library') content = <LibraryView sets={state.sets} progress={state.progress} openSet={openSet} create={() => navigate('create')} />
-  else if (view === 'create') content = <SetEditor initial={editing} seedCards={draft?.cards} seedTitle={draft?.title} seedSubject={draft?.subject} seedDescription={draft?.description} seedSources={draft?.sources} save={saveSet} cancel={() => setView(editing ? 'set' : 'library')} />
+  else if (view === 'create') content = <SetEditor initial={editing} seedCards={draft?.cards} seedTitle={draft?.title} seedSubject={draft?.subject} seedDescription={draft?.description} seedSources={draft?.sources} isDraft={Boolean(draft)} generate={() => navigate('generate')} save={saveSet} cancel={() => setView(editing ? 'set' : 'library')} />
   else if (view === 'generate') content = <GenerateView onDraft={(result, sources) => { setDraft({ ...result, sources }); setEditing(undefined); setView('create') }} />
   else if (view === 'progress') content = <ProgressView sets={state.sets} progress={state.progress} attempts={state.attempts} activityDates={state.activityDates} backup={() => downloadBackup(state)} restore={restore} reset={reset} openSet={openSet} />
   else if (view === 'settings') content = <SettingsView preferences={state.preferences} update={(preferences) => setState((current) => ({ ...current, preferences }))} backup={() => downloadBackup(state)} />
   else if (view === 'share') content = <SharedSetView set={sharedSet} error={shareError} browse={() => navigate('library')} save={() => { if (sharedSet) { history.replaceState(null, '', `${location.pathname}${location.search}`); saveSet(sharedSet) } }} />
   else if (!selected) content = <LibraryView sets={state.sets} progress={state.progress} openSet={openSet} create={() => navigate('create')} />
-  else if (view === 'set') content = <SetDetail set={selected} progress={state.progress[selected.id] ?? {}} navigate={navigate} edit={() => { setEditing(selected); setDraft(undefined); setView('create') }} duplicate={duplicate} remove={remove} share={() => createShareUrl(selected)} />
+  else if (view === 'set') content = <SetDetail set={selected} progress={state.progress[selected.id] ?? {}} navigate={navigate} edit={() => { setEditing(selected); setDraft(undefined); setView('create') }} duplicate={duplicate} toggleArchive={toggleArchive} remove={remove} share={() => createShareUrl(selected)} />
   else if (view === 'cards') content = <Flashcards set={selected} back={() => setView('set')} />
   else if (view === 'learn') content = <LearnMode set={selected} progress={state.progress[selected.id] ?? {}} back={() => setView('set')} answer={answer} />
   else content = <MockTest set={selected} back={() => setView('set')} finish={finishTest} />

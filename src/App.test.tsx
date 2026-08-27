@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { STORAGE_KEY } from './lib/storage'
 
@@ -9,6 +9,8 @@ describe('Open SourceED app', () => {
     sessionStorage.clear()
     history.replaceState(null, '', '/open-source-ed/')
   })
+
+  afterEach(() => vi.unstubAllGlobals())
 
   it('opens the starter set from the dashboard', () => {
     render(<App />)
@@ -31,7 +33,44 @@ describe('Open SourceED app', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /create a set/i }))
     expect(screen.getByRole('heading', { name: 'Create a study set' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /generate with ai/i })).toBeInTheDocument()
     expect(screen.getAllByPlaceholderText('What should you recall?')).toHaveLength(2)
+  })
+
+  it('archives and restores a set without deleting it', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /cell biology essentials/i }))
+    fireEvent.click(screen.getByRole('button', { name: /more set actions/i }))
+    fireEvent.click(screen.getByRole('button', { name: /archive set/i }))
+    expect(screen.getByRole('button', { name: /active 1/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /archived 1/i }))
+    fireEvent.click(screen.getByRole('button', { name: /cell biology essentials/i }))
+    expect(screen.getByText(/archived$/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /more set actions/i }))
+    fireEvent.click(screen.getByRole('button', { name: /restore to library/i }))
+    expect(screen.getByRole('button', { name: /active 2/i })).toBeInTheDocument()
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets.find((set: { id: string }) => set.id === 'demo-cell-biology').archived).toBe(false))
+  })
+
+  it('reviews an AI draft in Create before saving it', async () => {
+    sessionStorage.setItem('open-source-ed.openrouter.session-key', 'visitor-key')
+    const generated = { title: 'Photosynthesis Review', subject: 'Biology', description: 'An editable AI draft.', cards: [{ term: 'Light reactions', definition: 'They convert light energy into chemical energy.', note: 'Occurs in thylakoid membranes.' }, { term: 'Calvin cycle', definition: 'It uses chemical energy to fix carbon dioxide.', note: 'Occurs in the stroma.' }] }
+    vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => String(input).includes('/api/health')
+      ? new Response(JSON.stringify({ configured: false }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+      : new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(generated) } }] }), { status: 200, headers: { 'Content-Type': 'application/json' } })))
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /create a set/i }))
+    fireEvent.click(screen.getByRole('button', { name: /generate with ai/i }))
+    fireEvent.change(screen.getByLabelText(/what are you studying/i), { target: { value: 'Photosynthesis' } })
+    fireEvent.change(screen.getByLabelText(/paste source material/i), { target: { value: 'Photosynthesis captures light energy in chloroplasts. The light reactions produce ATP and NADPH. The Calvin cycle uses those molecules to fix carbon dioxide into organic compounds.'.repeat(2) } })
+    fireEvent.click(screen.getByRole('button', { name: /generate editable cards/i }))
+    expect(await screen.findByRole('heading', { name: 'Review generated study set' })).toBeInTheDocument()
+    expect(screen.getByText(/not in your library until you press save set/i)).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Photosynthesis Review')).toBeInTheDocument()
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(2)
+    fireEvent.click(screen.getByRole('button', { name: 'Save set' }))
+    expect(await screen.findByRole('heading', { name: 'Photosynthesis Review' })).toBeInTheDocument()
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(3))
   })
 
   it('changes and persists appearance settings', () => {

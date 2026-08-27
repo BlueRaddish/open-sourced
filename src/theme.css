@@ -534,6 +534,97 @@ select {
   height: 5px;
 }
 
+.library-tabs {
+  display: inline-flex;
+  gap: 5px;
+  padding: 5px;
+  margin-bottom: 18px;
+  background: color-mix(in srgb, var(--line) 45%, transparent);
+  border-radius: 13px;
+}
+
+.library-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 39px;
+  padding: 7px 12px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.library-tabs button.active {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 3px 10px rgba(32, 40, 39, .08);
+}
+
+.library-tabs button span {
+  display: grid;
+  min-width: 21px;
+  height: 21px;
+  padding-inline: 5px;
+  place-items: center;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: 100px;
+  font-size: 10px;
+}
+
+.create-method,
+.draft-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px 20px;
+  margin-bottom: 15px;
+  background: color-mix(in srgb, var(--teal) 7%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, var(--line));
+  border-radius: 15px;
+}
+
+.create-method > div,
+.draft-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.create-method > div > svg,
+.draft-notice > svg {
+  flex: 0 0 auto;
+  color: var(--teal);
+}
+
+.create-method b,
+.create-method small,
+.draft-notice b,
+.draft-notice span {
+  display: block;
+}
+
+.create-method small,
+.draft-notice span,
+.generation-save-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.create-method small,
+.draft-notice span {
+  margin-top: 3px;
+}
+
+.generation-save-note {
+  margin: 10px 0 0;
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   .topic-mastery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -547,5 +638,19 @@ select {
 
   .topic-mastery {
     grid-template-columns: 1fr;
+  }
+
+  .create-method {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .library-tabs {
+    display: flex;
+  }
+
+  .library-tabs button {
+    flex: 1;
+    justify-content: center;
   }
 }

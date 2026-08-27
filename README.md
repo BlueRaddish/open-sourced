@@ -15,6 +15,7 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Flip-style flashcards, adaptive learning, and 4-choice mock tests
 - Per-card scheduling, accuracy, mastery, streaks, and test history
 - Search, duplicate, delete, and CSV export for individual sets
+- Archive and restore finished sets without losing proficiency or test history
 - JSON backup and restore for the complete local library
 - Responsive, accessible UI with a local-first data model
 - System, light, and dark appearance modes with four color palettes
@@ -22,6 +23,8 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - Built-in California driver knowledge test set with 64 attributed handbook questions and a 36-question mock exam
 
 The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth and uses their own free quota. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
+
+AI generation is available both from the main navigation and inside **Create**. It produces a pre-filled, editable draft in the standard set editor; it never saves directly to the library. The user can revise or remove any generated card before choosing **Save set**.
 
 ## Run locally
 

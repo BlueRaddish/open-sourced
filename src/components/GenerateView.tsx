@@ -74,6 +74,7 @@ export function GenerateView({ onDraft }: Props) {
       {!!sources.length && <div className="source-chips">{sources.map((source) => <span key={source}><FileText size={14} />{source}<button onClick={() => setSources((current) => current.filter((item) => item !== source))} aria-label={`Remove ${source}`}><X size={13} /></button></span>)}</div>}
       {error && <div className="form-error" role="alert">{error}</div>}
       <button className="primary generate-button" onClick={generate} disabled={loading || extracting || !ready}>{loading ? <><LoaderCircle className="spin" /> Building your draft…</> : <><Sparkles /> Generate editable cards <ArrowRight /></>}</button>
+      <p className="generation-save-note">This creates a draft only. You’ll review and edit every card in Create before anything is saved.</p>
     </div><aside className="trust-panel"><ShieldCheck /><h2>Free-only by design</h2><p>Generation always uses <code>openrouter/free</code>. When that person’s free quota runs out, it stops—there is no paid fallback and no shared project credit pool.</p><hr /><h3>Good source material</h3><ul><li>Course notes and study guides</li><li>Textbook excerpts you may use</li><li>PDF handbooks and reference sheets</li><li>Your own outlines and summaries</li></ul><p className="small-print">OAuth keys remain in the connecting visitor’s browser tab. Always review generated cards against the original source.</p></aside></div>
   </section>
 }

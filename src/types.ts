@@ -23,6 +23,7 @@ export type StudySet = {
   subject: string
   description: string
   color: string
+  archived?: boolean
   cards: StudyCard[]
   testSize?: number
   sources: string[]

@@ -1,14 +1,14 @@
-import { ArrowLeft, FileUp, GripVertical, Plus, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, FileUp, GripVertical, Plus, Save, Sparkles, Trash2 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { StudyCard, StudySet } from '../types'
 import { makeId } from '../lib/study'
 import { parseDelimited } from '../lib/resources'
 
-type Props = { initial?: StudySet; seedCards?: StudyCard[]; seedTitle?: string; seedSubject?: string; seedDescription?: string; seedSources?: string[]; save: (set: StudySet) => void; cancel: () => void }
+type Props = { initial?: StudySet; seedCards?: StudyCard[]; seedTitle?: string; seedSubject?: string; seedDescription?: string; seedSources?: string[]; isDraft?: boolean; generate: () => void; save: (set: StudySet) => void; cancel: () => void }
 const colors = ['#f26b4e', '#166b68', '#e7a43b', '#6555a3', '#3478a6', '#b95772']
 const blank = (): StudyCard => ({ id: makeId(), term: '', definition: '', note: '' })
 
-export function SetEditor({ initial, seedCards, seedTitle, seedSubject, seedDescription, seedSources, save, cancel }: Props) {
+export function SetEditor({ initial, seedCards, seedTitle, seedSubject, seedDescription, seedSources, isDraft, generate, save, cancel }: Props) {
   const now = new Date().toISOString()
   const [title, setTitle] = useState(initial?.title ?? seedTitle ?? '')
   const [subject, setSubject] = useState(initial?.subject ?? seedSubject ?? '')
@@ -23,7 +23,7 @@ export function SetEditor({ initial, seedCards, seedTitle, seedSubject, seedDesc
     const valid = cards.filter((card) => card.term.trim() && card.definition.trim()).map((card) => ({ ...card, term: card.term.trim(), definition: card.definition.trim(), note: card.note.trim() }))
     if (!title.trim()) return setError('Give your set a title.')
     if (valid.length < 2) return setError('Add at least two complete cards.')
-    save({ id: initial?.id ?? makeId(), title: title.trim(), subject: subject.trim() || 'General', description: description.trim(), color, cards: valid, sources: initial?.sources ?? seedSources ?? [], createdAt: initial?.createdAt ?? now, updatedAt: now })
+    save({ id: initial?.id ?? makeId(), title: title.trim(), subject: subject.trim() || 'General', description: description.trim(), color, archived: initial?.archived, cards: valid, testSize: initial?.testSize, sources: initial?.sources ?? seedSources ?? [], createdAt: initial?.createdAt ?? now, updatedAt: now })
   }
   const importCsv = async (file?: File) => {
     if (!file) return
@@ -33,7 +33,8 @@ export function SetEditor({ initial, seedCards, seedTitle, seedSubject, seedDesc
   }
   return <section className="page-width page-section editor-page">
     <button className="back-button" onClick={cancel}><ArrowLeft size={18} /> Back</button>
-    <div className="page-title compact"><div><span className="kicker">{initial ? 'Refine your material' : 'Start from scratch'}</span><h1>{initial ? 'Edit study set' : 'Create a study set'}</h1></div><button className="primary" onClick={submit}><Save size={18} /> Save set</button></div>
+    <div className="page-title compact"><div><span className="kicker">{initial ? 'Refine your material' : isDraft ? 'Review before saving' : 'Build it your way'}</span><h1>{initial ? 'Edit study set' : isDraft ? 'Review generated study set' : 'Create a study set'}</h1></div><button className="primary" onClick={submit}><Save size={18} /> Save set</button></div>
+    {!initial && (isDraft ? <div className="draft-notice"><Sparkles /><div><b>Editable AI draft</b><span>Change anything below. This set is not in your library until you press Save set.</span></div></div> : <div className="create-method"><div><Sparkles /><span><b>Want a head start?</b><small>Generate an editable draft from your notes or resources.</small></span></div><button className="secondary" onClick={generate}><Sparkles size={17} /> Generate with AI</button></div>)}
     <div className="editor-panel">
       <div className="form-grid"><label><span>Title *</span><input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="e.g. Organic chemistry: reactions" /></label><label><span>Subject</span><input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="e.g. Chemistry" /></label></div>
       <label><span>Description</span><textarea rows={2} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="What does this set cover?" /></label>
