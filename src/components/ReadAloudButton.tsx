@@ -1,6 +1,6 @@
 import { Square, Volume2 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
-import { inferSpeechLanguage } from '../lib/speech'
+import { inferSpeechLanguage, selectSpeechVoice, type SpeechSegment } from '../lib/speech'
 
 const SPEECH_EVENT = 'open-sourced:speech-change'
 let activeSpeech = ''
@@ -11,7 +11,7 @@ function announceSpeech(id: string) {
 }
 
 type Props = {
-  text: string | string[]
+  text: string | Array<string | SpeechSegment>
   label: string
   compact?: boolean
   className?: string
@@ -42,13 +42,15 @@ export function ReadAloudButton({ text, label, compact = false, className = '' }
       return
     }
     window.speechSynthesis.cancel()
-    const parts = (Array.isArray(text) ? text : [text]).map((part) => part.trim()).filter(Boolean)
+    const parts = (Array.isArray(text) ? text : [text]).map((part) => typeof part === 'string' ? { text: part } : part).map((part) => ({ ...part, text: part.text.trim() })).filter((part) => part.text)
     if (!parts.length) return
     announceSpeech(id)
     parts.forEach((part, index) => {
-      const utterance = new SpeechSynthesisUtterance(part)
-      utterance.lang = inferSpeechLanguage(part)
-      utterance.rate = .95
+      const utterance = new SpeechSynthesisUtterance(part.text)
+      utterance.lang = part.lang || inferSpeechLanguage(part.text)
+      utterance.rate = part.rate ?? .95
+      const voice = selectSpeechVoice(utterance.lang, window.speechSynthesis.getVoices?.() ?? [])
+      if (voice) utterance.voice = voice
       const finish = () => { if (activeSpeech === id) announceSpeech('') }
       utterance.onerror = finish
       if (index === parts.length - 1) utterance.onend = finish

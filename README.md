@@ -79,7 +79,7 @@ The built-in generation presets are community-editable starting points, not perm
 
 Sets, card-level proficiency, streaks, test attempts, and appearance preferences live in browser `localStorage`. This storage belongs to the current website origin and browser profile—it is not a GitHub database and does not sync between browsers or devices. The temporary OpenRouter OAuth key lives separately in tab-scoped `sessionStorage`. Uploaded resources are extracted in the browser and are not saved with the library. Their text is sent to OpenRouter only when **Generate editable cards** is pressed. Use **Settings → Export a portable backup** or **Progress → Export backup** before clearing browser data or switching devices.
 
-Read-aloud uses the browser or operating system’s built-in speech-synthesis voices. Card text is not sent to an Open SourcED audio server, no speech API key is required, and available voices or pronunciation quality depend on the device and browser.
+Read-aloud uses the browser or operating system’s built-in speech-synthesis voices. Japanese study cards prefer an installed `ja-JP` voice, use kana readings when supplied for kanji, separate Japanese examples from English meanings, and avoid reading short romaji glosses as English letters. Card text is not sent to an Open SourcED audio server, no speech API key is required, and available voices or pronunciation quality still depend on the device and browser.
 
 The Library repeats this storage status in-product and links directly to the backup controls, so users do not need to discover the local-only model from documentation.
 
