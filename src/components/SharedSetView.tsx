@@ -1,5 +1,6 @@
 import { BookOpen, Download, Link2, ShieldCheck } from 'lucide-react'
 import type { StudySet } from '../types'
+import { ReadAloudButton } from './ReadAloudButton'
 
 type Props = { set?: StudySet; error?: string; save: () => void; browse: () => void }
 
@@ -10,6 +11,6 @@ export function SharedSetView({ set, error, save, browse }: Props) {
     <div className="set-banner" style={{ '--set-color': set.color } as React.CSSProperties}><div><span>{set.subject}</span><h1>{set.title}</h1><p>{set.description || 'A shared Open SourcED study set.'}</p><small>{set.cards.length} cards</small></div><BookOpen className="shared-book" /></div>
     <div className="shared-actions"><button className="primary" onClick={save}><Download /> Save to my library</button><button className="secondary" onClick={browse}>Not now</button></div>
     <div className="section-heading card-list-heading"><div><span className="kicker">Preview</span><h2>Terms in this set</h2></div></div>
-    <div className="term-list">{set.cards.map((card) => <article key={card.id}><div><h3>{card.term}</h3><p>{card.definition}</p>{card.note && <small>{card.note}</small>}</div></article>)}</div>
+    <div className="term-list">{set.cards.map((card) => <article key={card.id}><div><h3>{card.term}</h3><p>{card.definition}</p>{card.note && <small>{card.note}</small>}</div><ReadAloudButton compact text={[card.term, card.definition, card.note]} label={`Read ${card.term} aloud`} /></article>)}</div>
   </section>
 }

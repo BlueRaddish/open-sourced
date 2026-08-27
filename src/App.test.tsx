@@ -16,7 +16,10 @@ describe('Open SourcED app', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /cell biology essentials/i }))
     expect(screen.getByRole('heading', { name: 'Cell Biology Essentials' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Read Cell membrane aloud' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /flashcards/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /flashcards/i }))
+    expect(screen.getByRole('button', { name: 'Read term aloud' })).toBeInTheDocument()
   })
 
   it('includes the complete California DMV study set', () => {

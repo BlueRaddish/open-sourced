@@ -286,6 +286,37 @@ select {
   flex: 0 0 auto;
 }
 
+.flash-audio {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.flash-audio + .flash-controls {
+  margin-top: 12px;
+}
+
+.read-aloud-button {
+  gap: 7px;
+}
+
+.read-aloud-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.term-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.term-actions .read-aloud-button,
+.term-list > article > .read-aloud-button {
+  color: var(--teal);
+}
+
 .model-picker,
 .generation-guidance {
   padding: 0;
