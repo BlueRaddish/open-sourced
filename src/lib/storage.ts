@@ -1,18 +1,21 @@
 import { demoSet } from '../data/demo'
 import { caDmvSet } from '../data/caDmv'
+import { japaneseSets } from '../data/japanese'
 import type { Preferences, StudyState } from '../types'
 
 export const STORAGE_KEY = 'open-source-ed.library.v1'
 const LEGACY_STORAGE_KEY = 'studyforge.library.v1'
 
 export const defaultPreferences: Preferences = { theme: 'system', palette: 'poppy' }
-const CURRENT_SEED_VERSION = 1
+const CURRENT_SEED_VERSION = 2
 
-export const initialState = (): StudyState => ({ version: 1, seedVersion: CURRENT_SEED_VERSION, sets: [demoSet, caDmvSet], progress: {}, attempts: [], activityDates: [], preferences: defaultPreferences })
+export const initialState = (): StudyState => ({ version: 1, seedVersion: CURRENT_SEED_VERSION, sets: [demoSet, caDmvSet, ...japaneseSets], progress: {}, attempts: [], activityDates: [], preferences: defaultPreferences })
 
 function normalizeState(parsed: StudyState): StudyState {
   const seedVersion = parsed.seedVersion ?? 0
-  const sets = seedVersion < CURRENT_SEED_VERSION && !parsed.sets.some((set) => set.id === caDmvSet.id) ? [...parsed.sets, caDmvSet] : parsed.sets
+  const sets = [...parsed.sets]
+  if (seedVersion < 1 && !sets.some((set) => set.id === caDmvSet.id)) sets.push(caDmvSet)
+  if (seedVersion < 2) japaneseSets.forEach((sample) => { if (!sets.some((set) => set.id === sample.id)) sets.push(sample) })
   return { ...parsed, sets, seedVersion: CURRENT_SEED_VERSION, preferences: parsed.preferences ?? defaultPreferences }
 }
 

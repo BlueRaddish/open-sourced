@@ -29,6 +29,20 @@ describe('Open SourceED app', () => {
     expect(screen.getByText('0 / 36 answered')).toBeInTheDocument()
   })
 
+  it('provides multiple Japanese sample sets and explains local storage', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Library' }))
+    expect(screen.getByRole('button', { name: /active 7/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /japanese hiragana: first 15/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /japanese katakana: first 15/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /japanese greetings & polite phrases/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /japanese n5 core vocabulary/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /japanese beginner grammar patterns/i })).toBeInTheDocument()
+    expect(screen.getByText(/local storage—not github or cloud sync/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /backup & storage/i }))
+    expect(screen.getByRole('heading', { name: 'Local to this browser' })).toBeInTheDocument()
+  })
+
   it('opens the manual set editor', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /create a set/i }))
@@ -42,13 +56,13 @@ describe('Open SourceED app', () => {
     fireEvent.click(screen.getByRole('button', { name: /cell biology essentials/i }))
     fireEvent.click(screen.getByRole('button', { name: /more set actions/i }))
     fireEvent.click(screen.getByRole('button', { name: /archive set/i }))
-    expect(screen.getByRole('button', { name: /active 1/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /active 6/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /archived 1/i }))
     fireEvent.click(screen.getByRole('button', { name: /cell biology essentials/i }))
     expect(screen.getByText(/archived$/i)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /more set actions/i }))
     fireEvent.click(screen.getByRole('button', { name: /restore to library/i }))
-    expect(screen.getByRole('button', { name: /active 2/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /active 7/i })).toBeInTheDocument()
     await waitFor(() => expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets.find((set: { id: string }) => set.id === 'demo-cell-biology').archived).toBe(false))
   })
 
@@ -67,10 +81,10 @@ describe('Open SourceED app', () => {
     expect(await screen.findByRole('heading', { name: 'Review generated study set' })).toBeInTheDocument()
     expect(screen.getByText(/not in your library until you press save set/i)).toBeInTheDocument()
     expect(screen.getByDisplayValue('Photosynthesis Review')).toBeInTheDocument()
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(2)
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(7)
     fireEvent.click(screen.getByRole('button', { name: 'Save set' }))
     expect(await screen.findByRole('heading', { name: 'Photosynthesis Review' })).toBeInTheDocument()
-    await waitFor(() => expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(3))
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}').sets).toHaveLength(8))
   })
 
   it('changes and persists appearance settings', () => {

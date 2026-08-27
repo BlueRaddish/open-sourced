@@ -543,6 +543,38 @@ select {
   border-radius: 13px;
 }
 
+.local-storage-notice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 18px;
+  margin: -10px 0 20px;
+  background: color-mix(in srgb, var(--teal) 7%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, var(--line));
+  border-radius: 14px;
+}
+
+.local-storage-notice > svg {
+  color: var(--teal);
+}
+
+.local-storage-notice b {
+  display: block;
+  font-size: 13px;
+}
+
+.local-storage-notice p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.local-storage-notice .text-button {
+  white-space: nowrap;
+}
+
 .library-tabs button {
   display: inline-flex;
   align-items: center;
@@ -652,5 +684,14 @@ select {
   .library-tabs button {
     flex: 1;
     justify-content: center;
+  }
+
+  .local-storage-notice {
+    grid-template-columns: 32px 1fr;
+  }
+
+  .local-storage-notice .text-button {
+    grid-column: 2;
+    justify-self: start;
   }
 }

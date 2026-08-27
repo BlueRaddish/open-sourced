@@ -21,6 +21,7 @@ Open SourceED is an open-source, Quizlet-style learning workspace for any subjec
 - System, light, and dark appearance modes with four color palettes
 - Zero-server, unlisted share links with read-only preview and local import
 - Built-in California driver knowledge test set with 64 attributed handbook questions and a 36-question mock exam
+- Five beginner Japanese sample sets for testing a realistic multi-set library
 
 The GitHub Pages build supports the complete experience. For AI generation, each visitor connects their own OpenRouter account through OAuth and uses their own free quota. There is no shared project credit pool for strangers to drain. An optional free-only server endpoint remains available for self-hosted deployments.
 
@@ -61,6 +62,8 @@ The public GitHub Pages workflow has no API secret.
 ## Data and privacy
 
 Sets, card-level proficiency, streaks, test attempts, and appearance preferences live in browser `localStorage`. This storage belongs to the current website origin and browser profile—it is not a GitHub database and does not sync between browsers or devices. The temporary OpenRouter OAuth key lives separately in tab-scoped `sessionStorage`. Uploaded resources are extracted in the browser and are not saved with the library. Their text is sent to OpenRouter only when **Generate editable cards** is pressed. Use **Settings → Export a portable backup** or **Progress → Export backup** before clearing browser data or switching devices.
+
+The Library repeats this storage status in-product and links directly to the backup controls, so users do not need to discover the local-only model from documentation.
 
 ## Sharing without a database
 
