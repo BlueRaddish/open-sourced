@@ -1,5 +1,6 @@
 import type { SpeechSegment } from './speech'
 import type { PiperPlus } from 'piper-plus'
+import type { Tensor as OrtTensor } from 'onnxruntime-web'
 
 const MODEL_URL = 'https://huggingface.co/ayousanz/piper-plus-tsukuyomi-chan/resolve/main/tsukuyomi-chan-6lang-fp16.onnx'
 
@@ -85,6 +86,14 @@ async function loadEngine(update: (status: NeuralSpeechUpdate) => void) {
           if (!cachedModelData) throw new Error('The cached neural voice model is unavailable')
           const session = await ort.InferenceSession.create(cachedModelData, options)
           cachedModelData = undefined
+          if (session.inputNames.includes('speaker_embedding')) {
+            const originalRun = session.run.bind(session)
+            session.run = ((feeds: Record<string, OrtTensor>) => originalRun({
+              ...feeds,
+              speaker_embedding: feeds.speaker_embedding || new ort.Tensor('float32', new Float32Array(256), [1, 256]),
+              speaker_embedding_mask: feeds.speaker_embedding_mask || new ort.Tensor('int64', new BigInt64Array([0n]), [1, 1]),
+            })) as typeof session.run
+          }
           return session
         },
       },
