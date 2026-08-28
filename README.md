@@ -16,7 +16,7 @@ Open SourcED is an open-source, Quizlet-style learning workspace for any subject
 - Free generation by default, with opt-in GPT, Claude, and Gemini model choices
 - Review-before-save workflow for generated material
 - Flip-style flashcards, adaptive learning, and 4-choice mock tests
-- Browser-native read-aloud for either flashcard side and every term in a set
+- Browser-local neural read-aloud for either flashcard side and every term in a set
 - Per-card scheduling, accuracy, mastery, streaks, and test history
 - Search, duplicate, delete, and CSV export for individual sets
 - Archive and restore finished sets without losing proficiency or test history
@@ -79,7 +79,7 @@ The built-in generation presets are community-editable starting points, not perm
 
 Sets, card-level proficiency, streaks, test attempts, and appearance preferences live in browser `localStorage`. This storage belongs to the current website origin and browser profile—it is not a GitHub database and does not sync between browsers or devices. The temporary OpenRouter OAuth key lives separately in tab-scoped `sessionStorage`. Uploaded resources are extracted in the browser and are not saved with the library. Their text is sent to OpenRouter only when **Generate editable cards** is pressed. Use **Settings → Export a portable backup** or **Progress → Export backup** before clearing browser data or switching devices.
 
-Read-aloud uses the browser or operating system’s built-in speech-synthesis voices. Every utterance explicitly requests full volume, and Settings includes separate English and Japanese audio checks to help distinguish device-volume problems from a missing Japanese voice. Japanese study cards request `ja-JP`, use kana readings when supplied for kanji, separate Japanese examples from English meanings, and avoid reading short romaji glosses as English letters. Card text is not sent to an Open SourcED audio server, no speech API key is required, and available voices or pronunciation quality still depend on the device and browser.
+Read-aloud uses the MIT-licensed [Piper Plus](https://github.com/ayutaz/piper-plus) multilingual neural speech engine by default. On first use, the browser downloads the roughly 40 MB Tsukuyomi-chan model plus the WebAssembly speech engine and caches the model in IndexedDB; later uses reuse that local copy. Synthesis runs in the browser, card text is not sent to an Open SourcED audio server, and no account, API key, quota, or usage credits are involved. Japanese study cards request `ja-JP`, use kana readings supplied for kanji, separate Japanese examples from English meanings, and avoid reading short romaji glosses as English letters. The device’s built-in speech synthesis remains only as an automatic fallback if the neural engine cannot load or a language is unsupported.
 
 The Library repeats this storage status in-product and links directly to the backup controls, so users do not need to discover the local-only model from documentation.
 
@@ -103,6 +103,7 @@ Comma-separated rows are also accepted. Individual sets can be exported as CSV f
 
 - React 19 + TypeScript + Vite
 - `localStorage` persistence with versioned JSON backups
+- Piper Plus + ONNX Runtime Web for browser-local multilingual neural speech
 - PDF.js for browser-side PDF text extraction
 - Express local API and Vercel serverless adapter
 - Per-user OpenRouter OAuth PKCE + live GPT, Claude, Gemini, and free model catalog via `fetch`

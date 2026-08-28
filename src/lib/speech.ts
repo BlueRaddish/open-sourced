@@ -28,11 +28,26 @@ function japaneseExamples(note: string) {
   return note.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆ヵヶー〜、。！？「」『』・]+/gu) ?? []
 }
 
+function subjectSpeechLanguage(subject: string) {
+  if (/japanese/i.test(subject)) return 'ja-JP'
+  if (/chinese|mandarin/i.test(subject)) return 'zh-CN'
+  if (/spanish/i.test(subject)) return 'es-ES'
+  if (/french/i.test(subject)) return 'fr-FR'
+  if (/portuguese/i.test(subject)) return 'pt-BR'
+  if (/english/i.test(subject)) return 'en-US'
+  return undefined
+}
+
 export function cardSpeechSegments(card: Pick<StudyCard, 'term' | 'definition' | 'note'>, subject = '', side: 'term' | 'answer' | 'all' = 'all'): SpeechSegment[] {
   const japanese = /japanese/i.test(subject) || japanesePattern.test(card.term)
   if (!japanese) {
     const values = side === 'term' ? [card.term] : side === 'answer' ? [card.definition, card.note] : [card.term, card.definition, card.note]
-    return values.filter(Boolean).map((text) => ({ text, lang: inferSpeechLanguage(text), rate: .95 }))
+    const targetLanguage = subjectSpeechLanguage(subject)
+    return values.filter(Boolean).map((text, index) => ({
+      text,
+      lang: index === 0 && side !== 'answer' && targetLanguage ? targetLanguage : inferSpeechLanguage(text),
+      rate: .95,
+    }))
   }
 
   const terms = japaneseTermReadings(card.term).map((text) => ({ text, lang: 'ja-JP', rate: .8 }))

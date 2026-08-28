@@ -335,6 +335,14 @@ select {
   cursor: not-allowed;
 }
 
+.speech-spinner {
+  animation: speech-spin .9s linear infinite;
+}
+
+@keyframes speech-spin {
+  to { transform: rotate(360deg); }
+}
+
 .term-actions {
   display: flex;
   align-items: center;
