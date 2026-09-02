@@ -9,6 +9,8 @@ Open SourcED keeps the warm, editorial card language of the original RoadReady p
 - **Review before save:** generated cards always enter the normal editor as a draft.
 - **One obvious next action:** each study surface focuses on recall rather than configuration.
 - **Visible learning:** mastery represents card-level practice, not time spent in the app.
+- **Mode depth without account pressure:** recognition, recall, typing, matching, and testing belong in the core experience before any hosted social layer.
+- **Honest scope:** cloud collaboration and classrooms are optional future services, not implied by a static local-first deployment.
 
 ## Visual system
 
@@ -25,6 +27,8 @@ Open SourcED keeps the warm, editorial card language of the original RoadReady p
 - New, edited, duplicated, imported, and AI-drafted sets
 - Front/back flashcard states
 - Revealed adaptive answer with missed/knew confidence input
+- Typed-recall answer checking with learner-controlled final grading
+- Timed matching rounds sized for quick recognition practice
 - Active, incomplete, submitted, and reviewed mock tests
 - Unconfigured, loading, error, and successful AI generation
 - Desktop, tablet, and narrow mobile layouts

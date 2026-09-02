@@ -6,11 +6,13 @@ import { SetEditor } from './components/SetEditor'
 import { SetDetail } from './components/SetDetail'
 import { Flashcards } from './components/Flashcards'
 import { LearnMode } from './components/LearnMode'
+import { MatchMode } from './components/MatchMode'
 import { MockTest } from './components/MockTest'
 import { ProgressView } from './components/ProgressView'
 import { GenerateView } from './components/GenerateView'
 import { SettingsView } from './components/SettingsView'
 import { SharedSetView } from './components/SharedSetView'
+import { WriteMode } from './components/WriteMode'
 import type { GeneratedSet, StudyCard, StudySet, StudyState, View } from './types'
 import { downloadBackup, initialState, loadState, readBackup, saveState } from './lib/storage'
 import { makeId, recordAnswer, todayKey } from './lib/study'
@@ -93,6 +95,8 @@ export default function App() {
   else if (view === 'set') content = <SetDetail set={selected} progress={state.progress[selected.id] ?? {}} navigate={navigate} edit={() => { setEditing(selected); setDraft(undefined); setView('create') }} duplicate={duplicate} toggleArchive={toggleArchive} remove={remove} share={() => createShareUrl(selected)} />
   else if (view === 'cards') content = <Flashcards set={selected} back={() => setView('set')} />
   else if (view === 'learn') content = <LearnMode set={selected} progress={state.progress[selected.id] ?? {}} back={() => setView('set')} answer={answer} />
+  else if (view === 'write') content = <WriteMode set={selected} progress={state.progress[selected.id] ?? {}} back={() => setView('set')} answer={answer} />
+  else if (view === 'match') content = <MatchMode set={selected} back={() => setView('set')} answer={answer} />
   else content = <MockTest set={selected} back={() => setView('set')} finish={finishTest} />
   return <Shell view={view} navigate={navigate}>{content}</Shell>
 }

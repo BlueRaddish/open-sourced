@@ -1,4 +1,4 @@
-export type View = 'home' | 'library' | 'create' | 'set' | 'cards' | 'learn' | 'test' | 'progress' | 'generate' | 'settings' | 'share'
+export type View = 'home' | 'library' | 'create' | 'set' | 'cards' | 'learn' | 'write' | 'match' | 'test' | 'progress' | 'generate' | 'settings' | 'share'
 
 export type ThemeMode = 'system' | 'light' | 'dark'
 export type ColorPalette = 'poppy' | 'ocean' | 'violet' | 'forest'

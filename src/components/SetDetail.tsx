@@ -1,4 +1,4 @@
-import { Archive, ArchiveRestore, ArrowLeft, Brain, Copy, Download, Edit3, FileQuestion, Layers3, Link2, MoreHorizontal, Play, Trash2 } from 'lucide-react'
+import { Archive, ArchiveRestore, ArrowLeft, Brain, Copy, Download, Edit3, FileQuestion, Layers3, Link2, MoreHorizontal, PenLine, Play, Puzzle, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { CardProgress, StudyCard, StudySet, View } from '../types'
 import { exportSet } from '../lib/resources'
@@ -32,6 +32,8 @@ export function SetDetail({ set, progress, navigate, edit, duplicate, toggleArch
     <div className="mode-grid">
       <button onClick={() => navigate('cards')}><span className="mode-icon coral"><Layers3 /></span><div><h3>Flashcards</h3><p>Flip through the complete set</p></div><Play size={18} /></button>
       <button onClick={() => navigate('learn')}><span className="mode-icon teal"><Brain /></span><div><h3>Learn</h3><p>Adaptive retrieval practice</p></div><Play size={18} /></button>
+      <button onClick={() => navigate('write')}><span className="mode-icon violet"><PenLine /></span><div><h3>Write</h3><p>Type answers from memory</p></div><Play size={18} /></button>
+      <button onClick={() => navigate('match')} disabled={set.cards.length < 2}><span className="mode-icon forest"><Puzzle /></span><div><h3>Match</h3><p>Make a timed recall round</p></div><Play size={18} /></button>
       <button onClick={() => navigate('test')} disabled={set.cards.length < 4}><span className="mode-icon gold"><FileQuestion /></span><div><h3>Mock test</h3><p>Randomized multiple choice</p></div><Play size={18} /></button>
     </div>
     {topics.length > 1 && <section className="topic-section"><div className="section-heading"><div><span className="kicker">Handbook topics</span><h2>Proficiency by category</h2></div></div><div className="topic-mastery">{topics.map(([topic, cards]) => { const score = Math.round(cards.reduce((sum, card) => sum + mastery(progress[card.id]), 0) / cards.length); return <article key={topic}><div><b>{topic}</b><span>{cards.length} questions</span></div><strong>{score}%</strong><div className="progress-line"><i style={{ width: `${score}%`, background: set.color }} /></div></article> })}</div></section>}
