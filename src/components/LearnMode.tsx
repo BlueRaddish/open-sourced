@@ -109,7 +109,7 @@ export function LearnMode({ set, progress, back, answer }: Props) {
     return <section className="study-page page-width"><div className="completion learn-summary">
       <span className="completion-icon"><Check /></span><span className="kicker">Round {round} complete</span>
       <h1>{firstTry} of {outcomes.length} on the first try</h1>
-      <p>{firstTry === outcomes.length ? 'Clean round. Familiar cards move on to written answers next.' : 'Missed cards were asked again until you got them; they start the next round as still learning.'}</p>
+      <p>{firstTry === outcomes.length ? 'Clean round. Familiar cards move on to written answers next.' : 'Missed cards came back until you got them right; a correct re-ask moves them forward.'}</p>
       <StageTiles set={set} progress={progress} />
       <div className="round-review">{outcomes.map(({ card, correct }) => <article key={card.id} className={correct ? 'correct' : 'incorrect'}>{correct ? <Check size={18} /> : <X size={18} />}<div><b>{promptText(card, options.side)}</b><span>{answerText(card, options.side)}</span></div><StagePill progress={progress[card.id]} /></article>)}</div>
       <div className="button-row"><button className="primary" onClick={startRound}>{pending ? `Continue to round ${round + 1}` : 'Finish'}</button><button className="secondary" onClick={back}>Back to set</button></div>
