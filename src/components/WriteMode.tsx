@@ -1,5 +1,5 @@
 import { ArrowLeft, Check, PenLine, RotateCcw, X } from 'lucide-react'
-import { useMemo, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import type { CardProgress, StudyCard, StudySet } from '../types'
 import { dueCards } from '../lib/study'
 
@@ -16,7 +16,8 @@ export function writtenAnswerMatches(answer: string, definition: string) {
 }
 
 export function WriteMode({ set, progress, back, answer }: Props) {
-  const queue = useMemo(() => dueCards(set, progress), [set, progress])
+  // Snapshot the queue once: rebuilding it from live progress after each answer reorders the cards mid-session.
+  const [queue] = useState(() => dueCards(set, progress))
   const [index, setIndex] = useState(0)
   const [value, setValue] = useState('')
   const [checked, setChecked] = useState(false)
