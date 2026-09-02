@@ -1,7 +1,11 @@
 import type { CardProgress, StudyCard, StudySet } from '../types'
 
+export type AnswerSide = 'term' | 'definition'
+
 export const makeId = () => crypto.randomUUID()
 export const todayKey = () => new Date().toISOString().slice(0, 10)
+export const answerText = (card: StudyCard, side: AnswerSide) => side === 'term' ? card.term : card.definition
+export const promptText = (card: StudyCard, side: AnswerSide) => side === 'term' ? card.definition : card.term
 
 export function blankProgress(): CardProgress {
   return { seen: 0, correct: 0, incorrect: 0, streak: 0, intervalDays: 0, dueAt: new Date(0).toISOString() }
@@ -56,10 +60,10 @@ export function shuffle<T>(items: T[]) {
   return result
 }
 
-export function choicesFor(card: StudyCard, cards: StudyCard[]) {
-  if (card.choices?.length === 4 && card.choices.includes(card.definition)) return shuffle([...card.choices])
-  const distractors = shuffle(cards.filter((candidate) => candidate.id !== card.id)).slice(0, 3).map((candidate) => candidate.definition)
-  return shuffle([card.definition, ...distractors])
+export function choicesFor(card: StudyCard, cards: StudyCard[], side: AnswerSide = 'definition') {
+  if (side === 'definition' && card.choices?.length === 4 && card.choices.includes(card.definition)) return shuffle([...card.choices])
+  const distractors = shuffle(cards.filter((candidate) => candidate.id !== card.id)).slice(0, 3).map((candidate) => answerText(candidate, side))
+  return shuffle([answerText(card, side), ...distractors])
 }
 
 export function activityStreak(dates: string[]) {
