@@ -26,7 +26,7 @@ Open SourcED keeps the warm, editorial card language of the original RoadReady p
 - Starter, populated, searched, and empty libraries
 - New, edited, duplicated, imported, and AI-drafted sets
 - Front/back flashcard states
-- Revealed adaptive answer with missed/knew confidence input
+- Learn setup, multiple-choice and written questions, retype-after-miss, round summary, and all-caught-up states
 - Typed-recall answer checking with learner-controlled final grading
 - Timed matching rounds sized for quick recognition practice
 - Active, incomplete, submitted, and reviewed mock tests

@@ -31,7 +31,7 @@ export function SetDetail({ set, progress, navigate, edit, duplicate, toggleArch
     </div>
     <div className="mode-grid">
       <button onClick={() => navigate('cards')}><span className="mode-icon coral"><Layers3 /></span><div><h3>Flashcards</h3><p>Flip through the complete set</p></div><Play size={18} /></button>
-      <button onClick={() => navigate('learn')}><span className="mode-icon teal"><Brain /></span><div><h3>Learn</h3><p>Adaptive retrieval practice</p></div><Play size={18} /></button>
+      <button onClick={() => navigate('learn')}><span className="mode-icon teal"><Brain /></span><div><h3>Learn</h3><p>Multiple choice, then written, in rounds</p></div><Play size={18} /></button>
       <button onClick={() => navigate('write')}><span className="mode-icon violet"><PenLine /></span><div><h3>Write</h3><p>Type answers from memory</p></div><Play size={18} /></button>
       <button onClick={() => navigate('match')} disabled={set.cards.length < 2}><span className="mode-icon forest"><Puzzle /></span><div><h3>Match</h3><p>Make a timed recall round</p></div><Play size={18} /></button>
       <button onClick={() => navigate('test')} disabled={set.cards.length < 4}><span className="mode-icon gold"><FileQuestion /></span><div><h3>Mock test</h3><p>Randomized multiple choice</p></div><Play size={18} /></button>

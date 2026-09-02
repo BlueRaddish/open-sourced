@@ -26,7 +26,7 @@ This makes Open SourcED especially useful as a privacy-respecting flashcard app,
 ## Study modes
 
 - **Flashcards** — flip through a complete set, shuffle it, and read either side aloud.
-- **Learn** — adaptive active recall; difficult cards return sooner and correct retrieval extends the interval.
+- **Learn** — rounds of seven: multiple choice first, then written answers once a card is familiar; misses return in the same round, and mastered cards come back for spaced review when due.
 - **Write** — type an answer from memory, compare it transparently, and choose the final grade when wording can vary.
 - **Match** — fast, timed rounds of up to eight term-definition pairs for recognition practice.
 - **Mock Test** — randomized four-choice questions, answer review, score history, and per-card proficiency updates.
